@@ -1,7 +1,7 @@
 version: 2
 updates:
-  # Die Seite hat keine Laufzeit-Abhaengigkeiten - nur die Actions im
-  # Pages-Workflow. Genau die veralten still und werden hier beobachtet.
+  # The site has no runtime dependencies - only the actions in the Pages
+  # workflow. Those are exactly what goes stale unnoticed.
   - package-ecosystem: github-actions
     directory: "/"
     schedule:

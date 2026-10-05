@@ -1,22 +1,21 @@
-/* Pilanda Systems - Markenkonzept CI/CD, Entwurf v0.2 vom 05.10.2026.
+/* Pilanda Systems - brand concept CI/CD, draft v0.2 of 2026-10-05.
 
-   Eine Markenfarbe, und sie sagt etwas: Grau steht fuer den Ist-Zustand und
-   den Bruch, Petrol fuer die Loesung und die geschlossene Luecke. Es gibt
-   keine zweite Akzentfarbe - Signalorange und Stahlblau aus v0.1 sind
-   entfallen.
+   One brand colour, and it says something: grey carries the current state
+   and the break, petrol the fix and the closed gap. There is no second
+   accent - the signal orange and steel blue of v0.1 are gone.
 
-   Die Kontrastregel aus Abschnitt 7.3 ist nachgerechnet und gilt hier:
-   Petrol #008B8A traegt nur Flaechen, Grafik und grosse Schrift (auf Papier
-   3,6:1 - genug fuer Grafik, zu wenig fuer Text). Lauftext, Links und
-   Knopfbeschriftungen stehen in Petrol tief #006B6A: 5,5:1 auf Papier,
-   Weiss darauf 6,3:1. Graphit auf Papier sind 13,8:1.
+   The contrast rule from section 7.3 is recomputed and holds here: petrol
+   #008B8A carries only areas, graphics and large type (3.6:1 on paper -
+   enough for graphics, too little for text). Body text, links and button
+   labels use deep petrol #006B6A: 5.5:1 on paper, white on it 6.3:1.
+   Graphit on Papier is 13.8:1.
 
-   Blechgrau #8A9099 bleibt Linie und Ist-Zustand, wie das Konzept es sagt -
-   als Fliesstext waeren es 2,8:1. Der sekundaere Text nimmt deshalb einen
-   dunkleren Graphit-Ton.
+   Blechgrau #8A9099 stays a line and the current state, as the concept has
+   it - as body text it would be 2.8:1. Secondary text therefore takes a
+   darker Graphit tone.
 
-   Bewusst nur hell: ein Verkaufsauftritt soll auf jedem Rechner gleich
-   aussehen, auch wenn das Betriebssystem auf dunkel steht. */
+   Light only, on purpose: a sales presence should look the same on every
+   machine, even when the operating system is set to dark. */
 
 :root {
   --bg: #f2efe8;
@@ -31,8 +30,8 @@
   --petrol-soft: #dcebea;
   --font-sans: "IBM Plex Sans", Arial, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
-  /* Kein Container-Mass mehr: die Seite nimmt den ganzen Schirm, der
-     Seitenrand waechst mit. Die Lesbarkeit haengt am Textblock. */
+  /* No container width any more: the page takes the whole screen and the
+     gutter grows with it. Readability now hangs on the text block. */
   --gutter: clamp(20px, 4vw, 72px);
   --measure: 68ch;
   color-scheme: light;
@@ -52,7 +51,7 @@ body {
 
 .wrap { width: 100%; padding-inline: var(--gutter); }
 
-/* ---------- Kopf ---------- */
+/* ---------- Header ---------- */
 
 .top {
   position: sticky;
@@ -66,9 +65,9 @@ body {
 .top-in { display: flex; align-items: center; gap: 24px; min-height: 62px; flex-wrap: wrap; }
 .brandbar { height: 3px; background: var(--petrol); }
 
-/* Sprung in den Inhalt - sichtbar, sobald er den Fokus hat. Ein Sprungziel,
-   das unsichtbar bleibt, hilft nur Screenreadern und nicht dem, der ohne
-   Maus arbeitet. */
+/* Skip to content - visible as soon as it takes focus. A skip link that
+   stays invisible helps screen readers only, not the person working
+   without a mouse. */
 .skip {
   position: absolute;
   left: 12px;
@@ -103,10 +102,10 @@ body {
   box-shadow: inset 0 -2px 0 var(--petrol);
 }
 
-/* ---------- Bausteine ---------- */
+/* ---------- Building blocks ---------- */
 
-/* Links im Fliesstext: Petrol tief, damit sie auf Papier 5,5:1 erreichen,
-   und unterstrichen, weil Farbe allein kein Hinweis sein darf. */
+/* Links in body text: deep petrol, so they reach 5.5:1 on paper, and
+   underlined, because colour alone must not be the only cue. */
 main a:not(.btn):not(.btn-ghost) {
   color: var(--petrol-deep);
   text-decoration: underline;
@@ -150,9 +149,9 @@ h2 {
 h3 { font-size: 17px; line-height: 1.3; margin: 0; font-weight: 600; }
 p { margin: 0; }
 .lede { font-size: clamp(17px, 2.2vw, 19px); line-height: 1.55; color: var(--fg-muted); max-width: 62ch; }
-/* Abschnittskopf: Augenbraue und Titel links, Vorspann rechts daneben.
-   Beide behalten ihr Mass - die Breite entsteht aus zwei Spalten, nicht aus
-   laengeren Zeilen. */
+/* Section head: eyebrow and title on the left, lead paragraph beside it on
+   the right. Both keep their measure - the width comes from two columns,
+   not from longer lines. */
 .head { display: flex; flex-direction: column; gap: 14px; }
 @media (min-width: 1100px) {
   .head {
@@ -166,8 +165,8 @@ p { margin: 0; }
   .head > .lede { grid-column: 2; grid-row: 1 / span 2; }
 }
 
-/* Alles, was als Satz gelesen wird, behaelt sein Mass - auch da, wo der
-   Container es frueher erledigt hat. */
+/* Anything read as a sentence keeps its measure - including where the
+   container used to take care of it. */
 section > .wrap > .stack > p:not(.lede):not(.small),
 .panel > p, dl.faq dd { max-width: var(--measure); }
 .muted { color: var(--fg-muted); }
@@ -184,15 +183,15 @@ section > .wrap > .stack > p:not(.lede):not(.small),
 
 .rule { border-top: 2px solid var(--petrol); padding-top: 12px; }
 
-/* Kopfbereich: Text und Prozesslinie nebeneinander, sobald Platz da ist.
-   Darunter stapelt es, und die Linie laeuft waagrecht weiter. */
+/* Hero: text and process line side by side as soon as there is room.
+   Below that they stack, and the line keeps running horizontally. */
 .hero { display: grid; gap: 40px; align-items: center; }
 @media (min-width: 1100px) {
   .hero { grid-template-columns: minmax(0, 7fr) minmax(0, 6fr); gap: clamp(40px, 5vw, 96px); }
 }
 
-/* Die Prozesslinie. Oben der Ist-Zustand: die Kette reisst, die Luecke ist
-   sichtbar. Unten dieselbe Strecke durchgehend in Petrol. */
+/* The process line. Above, the current state: the chain breaks and the gap
+   is visible. Below, the same route unbroken in petrol. */
 .line { display: flex; flex-direction: column; gap: 30px; min-width: 0; }
 .line-row { display: flex; flex-direction: column; gap: 10px; }
 .line-head {
@@ -204,8 +203,8 @@ section > .wrap > .stack > p:not(.lede):not(.small),
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-.line-head.ist { color: var(--fg-muted); }
-.line-head.soll { color: var(--petrol-deep); }
+.line-head.current { color: var(--fg-muted); }
+.line-head.target { color: var(--petrol-deep); }
 .line-track { display: flex; align-items: center; }
 .line-seg { flex: 1; height: 2px; }
 .line-node { width: 11px; height: 11px; border-radius: 50%; flex: 0 0 auto; }
@@ -220,13 +219,13 @@ section > .wrap > .stack > p:not(.lede):not(.small),
 .line-labels li:first-child { text-align: left; }
 .line-labels li:last-child { text-align: right; }
 
-.ist .line-seg, .line-row.ist .line-seg { background: var(--line-strong); }
-.line-row.ist .line-seg.gap { background: transparent; }
-.line-row.ist .line-node { background: var(--surface); border: 2px solid var(--line-strong); box-sizing: border-box; }
-.line-row.ist .line-labels li { color: var(--fg-muted); }
-.line-row.soll .line-seg { background: var(--petrol); }
-.line-row.soll .line-node { background: var(--petrol); }
-.line-row.soll .line-labels li { color: var(--fg); }
+.current .line-seg, .line-row.current .line-seg { background: var(--line-strong); }
+.line-row.current .line-seg.gap { background: transparent; }
+.line-row.current .line-node { background: var(--surface); border: 2px solid var(--line-strong); box-sizing: border-box; }
+.line-row.current .line-labels li { color: var(--fg-muted); }
+.line-row.target .line-seg { background: var(--petrol); }
+.line-row.target .line-node { background: var(--petrol); }
+.line-row.target .line-labels li { color: var(--fg); }
 .line-note { font-size: 12.5px; line-height: 1.45; color: var(--fg-muted); }
 .card {
   background: var(--surface);
@@ -267,12 +266,12 @@ a:focus-visible, .btn:focus-visible, button:focus-visible {
   outline-offset: 3px;
 }
 
-/* Modulzeile: Punkt, Name, Einstiegspunkte */
+/* Module row: dot, name, entry points */
 .mod { display: flex; gap: 11px; align-items: flex-start; min-width: 0; }
 .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--petrol); margin-top: 8px; flex: 0 0 auto; }
 .dot.open { background: transparent; border: 2px dashed var(--line-strong); }
 
-/* Ablaufkette des Lieferantenportals */
+/* Process chain of the supplier portal */
 .flow { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); }
 @media (max-width: 860px) { .flow { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 18px; } }
 @media (max-width: 440px) { .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -287,7 +286,7 @@ a:focus-visible, .btn:focus-visible, button:focus-visible {
 .step-label { font-size: 12.5px; line-height: 1.3; text-align: center; color: var(--fg-muted); }
 .step-label.now { color: var(--fg); font-weight: 700; }
 
-/* Vorher/Nachher */
+/* Before and after */
 .split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); }
 @media (max-width: 640px) { .split { grid-template-columns: minmax(0, 1fr); } }
 .split > div { padding: 22px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }

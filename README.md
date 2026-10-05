@@ -1,93 +1,112 @@
-# Pilanda Systems — Webpräsenz
+# Pilanda Systems — website
 
-Statisches HTML, kein Build, kein Generator. Was im Repository liegt, ist
-genau das, was ausgeliefert wird.
+Static HTML, no build, no generator. What is in the repository is exactly
+what gets served.
+
+**Language rule:** code, comments and documentation in English; every string a
+visitor reads is German.
 
 ```
-index.html        Firmenseite (Leistungen, Know-how, Produkte, Ablauf, Kontakt)
-anlagenbau.html   Pilanda ERP — die Branchenlösung
-kontor.html       Kontor — Warenwirtschaft
-styles.css        Gestaltung, alle Farben als Token auf :root
-pilanda-*.svg     Signet und Wortmarke
-flyer/index.html  Verkaufsflyer, vier A4-Seiten, Schrift eingebettet
-flyer/quelle/     die vier Blaetter einzeln, wie sie gesetzt wurden
+index.html        company page (services, know-how, products, process, contact)
+anlagenbau.html   Pilanda ERP — the industry solution
+kontor.html       Kontor — inventory management
+styles.css        design, all colours as tokens on :root
+pilanda-*.svg     signet and wordmark
+flyer/index.html  sales flyer, four A4 pages, fonts embedded
+flyer/source/     the four sheets separately, as they were set
 ```
 
-Der Flyer ist zum Drucken gebaut: `flyer/index.html` oeffnen und ueber den
-Browser als PDF drucken (A4, Hintergrundgrafiken an, Raender aus). Die
-Schriften stecken in der Datei, damit das Ergebnis auf jedem Rechner gleich
-aussieht.
-
-Lokal ansehen: Datei im Browser öffnen, oder
+Serve it locally:
 
 ```bash
 python -m http.server 8080
 ```
 
-## Gestaltung
+The flyer is built for print: open `flyer/index.html` and print to PDF from
+the browser (A4, background graphics on, margins off). The fonts are embedded
+so the result looks the same on any machine.
 
-Grundlage ist das **Markenkonzept Corporate Identity und Corporate Design,
-Entwurf v0.2 vom 05.10.2026**. Die Farben stehen als Token auf `:root` in
-`styles.css` — sie werden dort geändert, nicht in den Seiten.
+## Design
 
-| Token | Wert | Rolle |
+The basis is the **brand concept for corporate identity and corporate design,
+draft v0.2 of 2026-10-05**. The colours are tokens on `:root` in `styles.css` —
+change them there, not in the pages.
+
+| Token | Value | Role |
 |---|---|---|
-| `--petrol` | `#008B8A` | Signet, Flächen, Grafik, große Schrift |
-| `--petrol-deep` | `#006B6A` | Lauftext, Links, Knopfbeschriftung |
-| `--fg` | `#1E2328` | Fließtext, Headlines (Graphit) |
-| `--line-strong` | `#8A9099` | Linien, Ist-Zustand (Blechgrau) |
-| `--bg` | `#F2EFE8` | Hintergrund (Papier) |
+| `--petrol` | `#008B8A` | signet, areas, graphics, large type |
+| `--petrol-deep` | `#006B6A` | body text, links, button labels |
+| `--fg` | `#1E2328` | body text, headlines (Graphit) |
+| `--line-strong` | `#8A9099` | lines, current state (Blechgrau) |
+| `--bg` | `#F2EFE8` | background (Papier) |
 
-**Eine Markenfarbe, kein zweiter Akzent.** Grau steht für den Ist-Zustand und
-den Bruch, Petrol für die Lösung und die geschlossene Lücke.
+**One brand colour, no second accent.** Grey carries the current state and the
+break, petrol the fix and the closed gap.
 
-Die Trennung zwischen `--petrol` und `--petrol-deep` ist keine Geschmacksfrage:
-das Logo-Petrol erreicht auf Papier 3,6:1 und trägt deshalb nur Flächen,
-Grafik und große Schrift. Lauftext und kleine Beschriftungen stehen in Petrol
-tief (5,5:1 auf Papier, Weiß darauf 6,3:1).
+Splitting `--petrol` from `--petrol-deep` is not a matter of taste: the logo
+petrol reaches 3.6:1 on paper and therefore carries only areas, graphics and
+large type. Body text and small labels use the deep petrol (5.5:1 on paper,
+white on it 6.3:1).
 
-Das Signet und die Wortmarke sind Kopien aus `pilanda_theme/public/logo/`.
-**Dort ist die Quelle** — ein Logowechsel gehört dorthin, nicht hierher.
+The signet and the wordmark are copies from `pilanda_theme/public/logo/`.
+**That is the source** — a logo change belongs there, not here.
 
-Schrift: IBM Plex Sans und IBM Plex Mono (SIL Open Font License), Arial als
-Fallback. Das gilt für das Marketing; die Oberflächen der Pilanda-Software
-tragen Noto Sans (Entscheid 05.10.2026).
+Typeface: IBM Plex Sans and IBM Plex Mono (SIL Open Font License), Arial as
+the fallback. That governs marketing; the interfaces of the Pilanda software
+run on Noto Sans (decision 2026-10-05).
 
-Die Seite ist bewusst **nur hell** — ein Verkaufsauftritt soll auf jedem
-Rechner gleich aussehen, auch wenn das Betriebssystem auf dunkel steht.
+The site is deliberately **light only** — a sales presence should look the
+same on every machine, even when the operating system is set to dark.
 
-## Veröffentlichung
+## Accessibility
 
-`.github/workflows/pages.yml` veröffentlicht jeden Stand von `main` auf
-GitHub Pages. Vorher prüft der Lauf, ob jeder Verweis auf eine Datei zeigt,
-die es gibt — ein toter Link auf das Signet fällt sonst erst beim Kunden auf.
+Reviewed against the UCT standard criteria (`schwarz-informatik/usability`).
+What the review changed:
 
-Die Seite läuft unter **https://pilanda-systems.github.io/homepage/**.
+- The process line in the header exposes its stations as an ordered list;
+  only the dots and bars are `aria-hidden`.
+- Every page starts with a skip link to the content, visible on focus.
+- The current page carries `aria-current="page"` and a visible marker.
+- English terms inside the German prose carry `lang="en"`.
 
-### Eigene Domain
+Still open: there is no clickable contact (`mailto:`, `tel:`) because the
+contact details are placeholders.
 
-`pilanda.systems` ist registriert, zeigt im DNS aber auf eine Parkseite des
-Registrars. Solange die Domain im Pages-Dienst eingetragen ist, liefert GitHub
-die Seite **ausschließlich dort** aus — und dort kommt sie nicht an. Sie ist
-deshalb vorerst nicht eingetragen.
+## Publishing
 
-Umstellen, wenn das DNS bereit ist:
+`.github/workflows/pages.yml` publishes every state of `main` to GitHub Pages.
+Before that, the run checks that every link points at a file that exists — a
+dead link to the signet would otherwise only surface at the customer.
 
-1. Beim Registrar vier A-Records für `pilanda.systems` setzen:
+The site runs at **https://pilanda-systems.github.io/homepage/**.
+
+### Custom domain
+
+`pilanda.systems` is registered but points at the registrar's parking page in
+DNS. While the domain is configured in the Pages service, GitHub serves the
+site **there only** — and there it does not arrive. It is therefore not
+configured for now.
+
+Switching over once DNS is ready:
+
+1. At the registrar, set four A records for `pilanda.systems`:
    `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
-   (für `www` stattdessen ein CNAME auf `pilanda-systems.github.io`).
-2. Warten, bis `nslookup pilanda.systems` diese Adressen zeigt.
-3. Datei `CNAME` mit dem Inhalt `pilanda.systems` im Repository-Wurzelverzeichnis
-   anlegen und pushen.
-4. In den Repository-Einstellungen unter Pages die Domain eintragen und
-   **Enforce HTTPS** anhaken, sobald das Zertifikat ausgestellt ist.
+   (for `www` a CNAME to `pilanda-systems.github.io` instead).
+2. Wait until `nslookup pilanda.systems` returns those addresses.
+3. Add a `CNAME` file containing `pilanda.systems` at the repository root and
+   push.
+4. Enter the domain under Pages in the repository settings and tick **Enforce
+   HTTPS** once the certificate has been issued.
 
-## Noch offen
+Note: an empty string does not clear the domain over the API — it takes
+`{"cname": null}`.
 
-- Kontaktdaten sind Platzhalter: `[E-Mail-Adresse]`, `[Telefonnummer]`,
+## Still open
+
+- Contact details are placeholders: `[E-Mail-Adresse]`, `[Telefonnummer]`,
   `[Firmenanschrift]`
-- Impressum und Datenschutz sind im Fuß verlinkt, aber es gibt keine Seiten
-- Preise fehlen
-- Die Kernfrage des Markenkonzepts (Beratung mit Werkzeugen oder Softwarehaus
-  mit Beratung) ist offen. Davon hängt ab, ob „Pilanda ERP" weiter als
-  eigenes Produkt geführt wird — das Konzept hält das für erklärungsbedürftig.
+- Imprint and privacy policy are linked in the footer but have no pages
+- Prices are missing
+- The brand concept's core question (consultancy with tools, or software house
+  with consultancy) is undecided. Whether "Pilanda ERP" stays a product of its
+  own hangs on it — the concept considers that in need of explanation.

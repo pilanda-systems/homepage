@@ -1,8 +1,8 @@
 name: Pages
 
-# Die Seite ist statisches HTML ohne Build. Der Lauf laedt den Stand des
-# Standes von `main` als Artefakt hoch und veroeffentlicht ihn - kein npm,
-# kein Generator, nichts, was zwischen Quelle und Ergebnis treten koennte.
+# The site is static HTML with no build step. The run uploads the state of
+# `main` as an artifact and publishes it - no npm, no generator, nothing that
+# could come between the source and the result.
 
 on:
   push:
@@ -14,8 +14,8 @@ permissions:
   pages: write
   id-token: write
 
-# Ein Deployment zur Zeit; laufende Lieferungen werden nicht abgebrochen,
-# damit eine halb veroeffentlichte Seite nicht stehen bleibt.
+# One deployment at a time. A running one is not cancelled, so a half
+# published site never stays up.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -29,25 +29,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verweise pruefen
-        # Ein toter Verweis auf eine Unterseite oder das Signet faellt im
-        # Browser erst beim Kunden auf. Hier faellt er vorher auf.
+      - name: Check links
+        # A dead link to a subpage or to the signet only shows up in the
+        # customer's browser. Here it shows up first.
         run: |
-          fehlt=0
-          for datei in *.html; do
-            while read -r ziel; do
-              case "$ziel" in
-                http*|mailto:*|\#*|"") continue ;;
+          missing=0
+          for file in *.html; do
+            while read -r target; do
+              case "$target" in
+                http*|mailto:*|tel:*|\#*|"") continue ;;
               esac
-              ziel="${ziel%%#*}"
-              [ -z "$ziel" ] && continue
-              if [ ! -f "$ziel" ]; then
-                echo "::error file=$datei::verweist auf $ziel - gibt es nicht"
-                fehlt=1
+              target="${target%%#*}"
+              [ -z "$target" ] && continue
+              if [ ! -f "$target" ]; then
+                echo "::error file=$file::links to $target - which does not exist"
+                missing=1
               fi
-            done < <(grep -oE '(href|src)="[^"]+"' "$datei" | cut -d'"' -f2)
+            done < <(grep -oE '(href|src)="[^"]+"' "$file" | cut -d'"' -f2)
           done
-          exit $fehlt
+          exit $missing
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

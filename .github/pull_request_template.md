@@ -1,16 +1,16 @@
-## Was aendert sich
+## What changes
 
-<!-- Eine Zeile: was sieht ein Besucher danach anders. -->
+<!-- One line: what a visitor sees differently afterwards. -->
 
-## Grundlage
+## Basis
 
-<!-- Welcher Abschnitt des Markenkonzepts CI/CD, welcher Entscheid, welches
-     Ticket. Bei reinen Textaenderungen: wer hat den Text freigegeben. -->
+<!-- Which section of the brand concept, which decision, which ticket. For
+     text-only changes: who approved the wording. -->
 
-## Geprueft
+## Checked
 
-- [ ] Auf Mobil (375px) und breit (ab 1600px) angesehen
-- [ ] Kontraste eingehalten (Petrol tief fuer Text, Logo-Petrol nur fuer
-      Flaechen und grosse Schrift)
-- [ ] Keine toten Verweise (der Pages-Lauf prueft es, aber nicht gegen
-      Tippfehler im Text)
+- [ ] Viewed on mobile (375px) and wide (1600px and up)
+- [ ] Contrast holds (deep petrol for text, logo petrol only for areas and
+      large type)
+- [ ] No dead links (the Pages run checks this, but not typos in prose)
+- [ ] Page text is German, code and comments are English
