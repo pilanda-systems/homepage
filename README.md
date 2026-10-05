@@ -7,6 +7,7 @@ what gets served.
 visitor reads is German.
 
 ```
+CNAME             the custom domain, read by GitHub Pages
 index.html        company page (services, know-how, products, process, contact)
 anlagenbau.html   Pilanda ERP — the industry solution
 kontor.html       Kontor — inventory management
@@ -78,28 +79,23 @@ contact details are placeholders.
 Before that, the run checks that every link points at a file that exists — a
 dead link to the signet would otherwise only surface at the customer.
 
-The site runs at **https://pilanda-systems.github.io/homepage/**.
+The site runs at **https://pilanda.systems**.
 
 ### Custom domain
 
-`pilanda.systems` is registered but points at the registrar's parking page in
-DNS. While the domain is configured in the Pages service, GitHub serves the
-site **there only** — and there it does not arrive. It is therefore not
-configured for now.
+`pilanda.systems` resolves to the four GitHub Pages addresses
+(`185.199.108-111.153`) and is configured in the Pages service. The `CNAME`
+file at the repository root holds the domain so a deployment cannot drop it —
+GitHub writes that file itself when the domain is set in the UI.
 
-Switching over once DNS is ready:
+Two things worth knowing if this ever has to be undone:
 
-1. At the registrar, set four A records for `pilanda.systems`:
-   `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
-   (for `www` a CNAME to `pilanda-systems.github.io` instead).
-2. Wait until `nslookup pilanda.systems` returns those addresses.
-3. Add a `CNAME` file containing `pilanda.systems` at the repository root and
-   push.
-4. Enter the domain under Pages in the repository settings and tick **Enforce
-   HTTPS** once the certificate has been issued.
-
-Note: an empty string does not clear the domain over the API — it takes
-`{"cname": null}`.
+- An empty string does not clear the domain over the API; it takes
+  `{"cname": null}`.
+- While a custom domain is configured, GitHub serves the site **there only**.
+  `pilanda-systems.github.io/homepage/` answers with a 301 to the domain, so
+  if DNS does not point at GitHub, the site is unreachable even though every
+  deployment succeeded.
 
 ## Still open
 
