@@ -9,7 +9,14 @@ anlagenbau.html   Pilanda ERP — die Branchenlösung
 kontor.html       Kontor — Warenwirtschaft
 styles.css        Gestaltung, alle Farben als Token auf :root
 pilanda-*.svg     Signet und Wortmarke
+flyer/index.html  Verkaufsflyer, vier A4-Seiten, Schrift eingebettet
+flyer/quelle/     die vier Blaetter einzeln, wie sie gesetzt wurden
 ```
+
+Der Flyer ist zum Drucken gebaut: `flyer/index.html` oeffnen und ueber den
+Browser als PDF drucken (A4, Hintergrundgrafiken an, Raender aus). Die
+Schriften stecken in der Datei, damit das Ergebnis auf jedem Rechner gleich
+aussieht.
 
 Lokal ansehen: Datei im Browser öffnen, oder
 

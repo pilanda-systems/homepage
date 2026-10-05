@@ -65,6 +65,23 @@ body {
 }
 .top-in { display: flex; align-items: center; gap: 24px; min-height: 62px; flex-wrap: wrap; }
 .brandbar { height: 3px; background: var(--petrol); }
+
+/* Sprung in den Inhalt - sichtbar, sobald er den Fokus hat. Ein Sprungziel,
+   das unsichtbar bleibt, hilft nur Screenreadern und nicht dem, der ohne
+   Maus arbeitet. */
+.skip {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 40;
+  background: var(--petrol-deep);
+  color: #ffffff;
+  padding: 10px 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 120ms;
+}
+.skip:focus { top: 12px; }
 .mark { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--fg); }
 .mark img { width: 34px; height: 34px; flex: 0 0 auto; }
 .mark b {
@@ -80,7 +97,11 @@ body {
 .nav { display: flex; gap: 20px; flex-wrap: wrap; margin-left: auto; align-items: center; }
 .nav a { color: var(--fg-muted); text-decoration: none; font-size: 14.5px; }
 .nav a:hover, .nav a:focus-visible { color: var(--petrol-deep); }
-.nav a.here { color: var(--fg); font-weight: 600; }
+.nav a.here, .nav a[aria-current="page"] {
+  color: var(--fg);
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--petrol);
+}
 
 /* ---------- Bausteine ---------- */
 
@@ -175,6 +196,9 @@ section > .wrap > .stack > p:not(.lede):not(.small),
 .line { display: flex; flex-direction: column; gap: 30px; min-width: 0; }
 .line-row { display: flex; flex-direction: column; gap: 10px; }
 .line-head {
+  margin: 0;
+  max-width: none;
+  font-weight: 500;
   font-family: var(--font-mono);
   font-size: 11.5px;
   letter-spacing: 0.14em;
@@ -185,24 +209,24 @@ section > .wrap > .stack > p:not(.lede):not(.small),
 .line-track { display: flex; align-items: center; }
 .line-seg { flex: 1; height: 2px; }
 .line-node { width: 11px; height: 11px; border-radius: 50%; flex: 0 0 auto; }
-.line-labels { display: flex; }
-.line-labels span {
+.line-labels { display: flex; margin: 0; padding: 0; list-style: none; counter-reset: station; }
+.line-labels li {
   flex: 1;
   font-size: 11.5px;
   line-height: 1.3;
   text-align: center;
   min-width: 0;
 }
-.line-labels span:first-child { text-align: left; }
-.line-labels span:last-child { text-align: right; }
+.line-labels li:first-child { text-align: left; }
+.line-labels li:last-child { text-align: right; }
 
 .ist .line-seg, .line-row.ist .line-seg { background: var(--line-strong); }
 .line-row.ist .line-seg.gap { background: transparent; }
 .line-row.ist .line-node { background: var(--surface); border: 2px solid var(--line-strong); box-sizing: border-box; }
-.line-row.ist .line-labels span { color: var(--fg-muted); }
+.line-row.ist .line-labels li { color: var(--fg-muted); }
 .line-row.soll .line-seg { background: var(--petrol); }
 .line-row.soll .line-node { background: var(--petrol); }
-.line-row.soll .line-labels span { color: var(--fg); }
+.line-row.soll .line-labels li { color: var(--fg); }
 .line-note { font-size: 12.5px; line-height: 1.45; color: var(--fg-muted); }
 .card {
   background: var(--surface);
@@ -287,6 +311,7 @@ dl.faq dd { margin: 6px 0 0; color: var(--fg-muted); font-size: 15px; line-heigh
 .foot { border-top: 1px solid var(--line); padding-block: 30px 40px; color: var(--fg-muted); font-size: 14px; }
 .foot a { color: var(--fg-muted); }
 .foot-in { display: flex; gap: 22px; flex-wrap: wrap; align-items: baseline; }
+.foot time { font-variant-numeric: tabular-nums; }
 .foot .spacer { margin-left: auto; }
 
 .tag {
