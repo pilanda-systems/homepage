@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # Die Seite hat keine Laufzeit-Abhaengigkeiten - nur die Actions im
+  # Pages-Workflow. Genau die veralten still und werden hier beobachtet.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "chore(deps)"

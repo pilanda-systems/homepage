@@ -1,0 +1,305 @@
+/* Pilanda Systems - Markenkonzept CI/CD, Entwurf v0.2 vom 05.10.2026.
+
+   Eine Markenfarbe, und sie sagt etwas: Grau steht fuer den Ist-Zustand und
+   den Bruch, Petrol fuer die Loesung und die geschlossene Luecke. Es gibt
+   keine zweite Akzentfarbe - Signalorange und Stahlblau aus v0.1 sind
+   entfallen.
+
+   Die Kontrastregel aus Abschnitt 7.3 ist nachgerechnet und gilt hier:
+   Petrol #008B8A traegt nur Flaechen, Grafik und grosse Schrift (auf Papier
+   3,6:1 - genug fuer Grafik, zu wenig fuer Text). Lauftext, Links und
+   Knopfbeschriftungen stehen in Petrol tief #006B6A: 5,5:1 auf Papier,
+   Weiss darauf 6,3:1. Graphit auf Papier sind 13,8:1.
+
+   Blechgrau #8A9099 bleibt Linie und Ist-Zustand, wie das Konzept es sagt -
+   als Fliesstext waeren es 2,8:1. Der sekundaere Text nimmt deshalb einen
+   dunkleren Graphit-Ton.
+
+   Bewusst nur hell: ein Verkaufsauftritt soll auf jedem Rechner gleich
+   aussehen, auch wenn das Betriebssystem auf dunkel steht. */
+
+:root {
+  --bg: #f2efe8;
+  --surface: #ffffff;
+  --surface-2: #eae6dd;
+  --fg: #1e2328;
+  --fg-muted: #565d64;
+  --line: #d2cec4;
+  --line-strong: #8a9099;
+  --petrol: #008b8a;
+  --petrol-deep: #006b6a;
+  --petrol-soft: #dcebea;
+  --font-sans: "IBM Plex Sans", Arial, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  /* Kein Container-Mass mehr: die Seite nimmt den ganzen Schirm, der
+     Seitenrand waechst mit. Die Lesbarkeit haengt am Textblock. */
+  --gutter: clamp(20px, 4vw, 72px);
+  --measure: 68ch;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { width: 100%; padding-inline: var(--gutter); }
+
+/* ---------- Kopf ---------- */
+
+.top {
+  position: sticky;
+  overflow: hidden;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+}
+.top-in { display: flex; align-items: center; gap: 24px; min-height: 62px; flex-wrap: wrap; }
+.brandbar { height: 3px; background: var(--petrol); }
+.mark { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--fg); }
+.mark img { width: 34px; height: 34px; flex: 0 0 auto; }
+.mark b {
+  color: var(--fg);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  display: block;
+}
+.mark b i { font-weight: 400; font-style: normal; font-size: 0.82em; letter-spacing: 0.08em; }
+.mark span { color: var(--fg-muted); font-size: 11.5px; line-height: 1.2; display: block; }
+.nav { display: flex; gap: 20px; flex-wrap: wrap; margin-left: auto; align-items: center; }
+.nav a { color: var(--fg-muted); text-decoration: none; font-size: 14.5px; }
+.nav a:hover, .nav a:focus-visible { color: var(--petrol-deep); }
+.nav a.here { color: var(--fg); font-weight: 600; }
+
+/* ---------- Bausteine ---------- */
+
+/* Links im Fliesstext: Petrol tief, damit sie auf Papier 5,5:1 erreichen,
+   und unterstrichen, weil Farbe allein kein Hinweis sein darf. */
+main a:not(.btn):not(.btn-ghost) {
+  color: var(--petrol-deep);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--petrol-deep) 40%, transparent);
+}
+main a:not(.btn):not(.btn-ghost):hover,
+main a:not(.btn):not(.btn-ghost):focus-visible {
+  text-decoration-color: currentColor;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--petrol-deep);
+}
+section { padding-block: 56px; border-top: 1px solid var(--line); }
+section:first-of-type { border-top: 0; }
+h1 {
+  max-width: 24ch;
+  font-size: clamp(34px, 6vw, 56px);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+  font-weight: 700;
+}
+h2 {
+  max-width: 28ch;
+  font-size: clamp(24px, 3.4vw, 32px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+  font-weight: 700;
+}
+h3 { font-size: 17px; line-height: 1.3; margin: 0; font-weight: 600; }
+p { margin: 0; }
+.lede { font-size: clamp(17px, 2.2vw, 19px); line-height: 1.55; color: var(--fg-muted); max-width: 62ch; }
+/* Abschnittskopf: Augenbraue und Titel links, Vorspann rechts daneben.
+   Beide behalten ihr Mass - die Breite entsteht aus zwei Spalten, nicht aus
+   laengeren Zeilen. */
+.head { display: flex; flex-direction: column; gap: 14px; }
+@media (min-width: 1100px) {
+  .head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(40px, 5vw, 96px);
+    align-items: end;
+  }
+  .head > .eyebrow { grid-column: 1; }
+  .head > h2 { grid-column: 1; margin-top: 10px; }
+  .head > .lede { grid-column: 2; grid-row: 1 / span 2; }
+}
+
+/* Alles, was als Satz gelesen wird, behaelt sein Mass - auch da, wo der
+   Container es frueher erledigt hat. */
+section > .wrap > .stack > p:not(.lede):not(.small),
+.panel > p, dl.faq dd { max-width: var(--measure); }
+.muted { color: var(--fg-muted); }
+.small { font-size: 14px; line-height: 1.5; }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.stack-lg { display: flex; flex-direction: column; gap: 28px; }
+
+.grid { display: grid; gap: 22px; }
+.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 860px) { .g3, .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .g2, .g3, .g4 { grid-template-columns: minmax(0, 1fr); } }
+
+.rule { border-top: 2px solid var(--petrol); padding-top: 12px; }
+
+/* Kopfbereich: Text und Prozesslinie nebeneinander, sobald Platz da ist.
+   Darunter stapelt es, und die Linie laeuft waagrecht weiter. */
+.hero { display: grid; gap: 40px; align-items: center; }
+@media (min-width: 1100px) {
+  .hero { grid-template-columns: minmax(0, 7fr) minmax(0, 6fr); gap: clamp(40px, 5vw, 96px); }
+}
+
+/* Die Prozesslinie. Oben der Ist-Zustand: die Kette reisst, die Luecke ist
+   sichtbar. Unten dieselbe Strecke durchgehend in Petrol. */
+.line { display: flex; flex-direction: column; gap: 30px; min-width: 0; }
+.line-row { display: flex; flex-direction: column; gap: 10px; }
+.line-head {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.line-head.ist { color: var(--fg-muted); }
+.line-head.soll { color: var(--petrol-deep); }
+.line-track { display: flex; align-items: center; }
+.line-seg { flex: 1; height: 2px; }
+.line-node { width: 11px; height: 11px; border-radius: 50%; flex: 0 0 auto; }
+.line-labels { display: flex; }
+.line-labels span {
+  flex: 1;
+  font-size: 11.5px;
+  line-height: 1.3;
+  text-align: center;
+  min-width: 0;
+}
+.line-labels span:first-child { text-align: left; }
+.line-labels span:last-child { text-align: right; }
+
+.ist .line-seg, .line-row.ist .line-seg { background: var(--line-strong); }
+.line-row.ist .line-seg.gap { background: transparent; }
+.line-row.ist .line-node { background: var(--surface); border: 2px solid var(--line-strong); box-sizing: border-box; }
+.line-row.ist .line-labels span { color: var(--fg-muted); }
+.line-row.soll .line-seg { background: var(--petrol); }
+.line-row.soll .line-node { background: var(--petrol); }
+.line-row.soll .line-labels span { color: var(--fg); }
+.line-note { font-size: 12.5px; line-height: 1.45; color: var(--fg-muted); }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.panel { background: var(--surface-2); padding: clamp(24px, 3vw, 44px); display: flex; flex-direction: column; gap: 12px; }
+
+.btn {
+  display: inline-block;
+  background: var(--petrol-deep);
+  color: #ffffff;
+  padding: 13px 22px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  border: 1px solid var(--petrol-deep);
+}
+.btn:hover, .btn:focus-visible { background: transparent; color: var(--petrol-deep); }
+.btn-ghost {
+  display: inline-block;
+  padding: 13px 22px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  color: var(--fg);
+  border: 1px solid var(--line);
+}
+.btn-ghost:hover, .btn-ghost:focus-visible { border-color: var(--petrol-deep); color: var(--petrol-deep); }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+a:focus-visible, .btn:focus-visible, button:focus-visible {
+  outline: 2px solid var(--petrol-deep);
+  outline-offset: 3px;
+}
+
+/* Modulzeile: Punkt, Name, Einstiegspunkte */
+.mod { display: flex; gap: 11px; align-items: flex-start; min-width: 0; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--petrol); margin-top: 8px; flex: 0 0 auto; }
+.dot.open { background: transparent; border: 2px dashed var(--line-strong); }
+
+/* Ablaufkette des Lieferantenportals */
+.flow { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); }
+@media (max-width: 860px) { .flow { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 18px; } }
+@media (max-width: 440px) { .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.step { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+.step-dots { display: flex; align-items: center; height: 26px; }
+.step-bar { flex: 1; height: 2px; background: var(--line-strong); }
+.step-bar.done { background: var(--petrol); }
+.step-bar.none { background: transparent; }
+.step-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--petrol); flex: 0 0 auto; }
+.step-dot.now { width: 22px; height: 22px; background: var(--petrol); border: 3px solid var(--fg); }
+.step-dot.todo { background: var(--surface); border: 2px solid var(--line-strong); }
+.step-label { font-size: 12.5px; line-height: 1.3; text-align: center; color: var(--fg-muted); }
+.step-label.now { color: var(--fg); font-weight: 700; }
+
+/* Vorher/Nachher */
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); }
+@media (max-width: 640px) { .split { grid-template-columns: minmax(0, 1fr); } }
+.split > div { padding: 22px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.split > div + div { border-left: 1px solid var(--line); background: var(--surface); box-shadow: inset 3px 0 0 var(--petrol); }
+@media (max-width: 640px) { .split > div + div { border-left: 0; border-top: 1px solid var(--line); } }
+
+.chain { display: flex; flex-wrap: wrap; gap: 8px; }
+.chain li {
+  list-style: none;
+  font-size: 13.5px;
+  padding: 6px 11px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+.chain { padding: 0; margin: 0; }
+
+dl.faq { margin: 0; display: flex; flex-direction: column; gap: 20px; }
+dl.faq dt { font-weight: 600; font-size: 16.5px; }
+dl.faq dd { margin: 6px 0 0; color: var(--fg-muted); font-size: 15px; line-height: 1.55; max-width: 72ch; }
+
+.foot { border-top: 1px solid var(--line); padding-block: 30px 40px; color: var(--fg-muted); font-size: 14px; }
+.foot a { color: var(--fg-muted); }
+.foot-in { display: flex; gap: 22px; flex-wrap: wrap; align-items: baseline; }
+.foot .spacer { margin-left: auto; }
+
+.tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  border: 1px solid var(--line-strong);
+  padding: 1px 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

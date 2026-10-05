@@ -1,0 +1,57 @@
+name: Pages
+
+# Die Seite ist statisches HTML ohne Build. Der Lauf laedt den Stand des
+# Standes von `main` als Artefakt hoch und veroeffentlicht ihn - kein npm,
+# kein Generator, nichts, was zwischen Quelle und Ergebnis treten koennte.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Ein Deployment zur Zeit; laufende Lieferungen werden nicht abgebrochen,
+# damit eine halb veroeffentlichte Seite nicht stehen bleibt.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verweise pruefen
+        # Ein toter Verweis auf eine Unterseite oder das Signet faellt im
+        # Browser erst beim Kunden auf. Hier faellt er vorher auf.
+        run: |
+          fehlt=0
+          for datei in *.html; do
+            while read -r ziel; do
+              case "$ziel" in
+                http*|mailto:*|\#*|"") continue ;;
+              esac
+              ziel="${ziel%%#*}"
+              [ -z "$ziel" ] && continue
+              if [ ! -f "$ziel" ]; then
+                echo "::error file=$datei::verweist auf $ziel - gibt es nicht"
+                fehlt=1
+              fi
+            done < <(grep -oE '(href|src)="[^"]+"' "$datei" | cut -d'"' -f2)
+          done
+          exit $fehlt
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
