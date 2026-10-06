@@ -123,10 +123,10 @@ Two things worth knowing if this ever has to be undone:
   administrative offence under § 26 ECG in Austria. Both pages carry
   `noindex` and say so at the top; they are a template with the right
   structure, not legal advice.
-- **Prices are set from the market and sit below it**, but nobody has signed
-  them off. The reference is the per-user ERP ladder of 39 / 86 / 163 euro:
-  Start 35, Handel 69, Projekt 109, Anlagenbau 149. Review before the first
-  offer goes out.
+- **Prices are set but nobody has signed them off.** Three tiers, per user
+  and month: Start 35, Standard 50, Premium 90. Kontor is a product of its
+  own and carries no price on this site. Review before the first offer goes
+  out.
 - The brand concept's core question (consultancy with tools, or software house
   with consultancy) is undecided. Whether "Pilanda ERP" stays a product of its
   own hangs on it — the concept considers that in need of explanation.
