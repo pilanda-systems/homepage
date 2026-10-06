@@ -9,7 +9,7 @@ visitor reads is German.
 ```
 CNAME             the custom domain, read by GitHub Pages
 index.html        company page (services, know-how, products, process, contact)
-anlagenbau.html   Pilanda ERP — the industry solution
+anlagenbau.html   Pilanda — the platform and its modules
 kontor.html       Kontor — inventory management
 preise.html       plans and add-ons
 impressum.html    imprint and disclosure (§ 5 ECG, § 25 MedienG)
@@ -31,6 +31,28 @@ python -m http.server 8080
 The flyer is built for print: open `flyer/index.html` and print to PDF from
 the browser (A4, background graphics on, margins off). The fonts are embedded
 so the result looks the same on any machine.
+
+## Naming
+
+**Never "ERP".** The brand concept settles it in chapter 6: the ERP emerges
+from combining the modules and does not need to be carried as a product of
+its own. Three levels:
+
+| level | name |
+|---|---|
+| company | Pilanda Systems |
+| platform | Pilanda |
+| module | Pilanda Sales, Pilanda Pilot, Pilanda Planning, … |
+| separate product | Kontor |
+
+"ERP" still appears three times on the site and all three talk about other
+people's systems - "Bestellung im ERP", "weil ein ERP dazukommt", "keinen
+Konzern-ERP brauchen". Those stay.
+
+Module names are only set where they are backed: the four the concept names
+itself and the ones the founder gave. The rest carry the functional label
+from the navigation contract (`pilanda/modules_data.py`) and nothing else.
+Invented product names on a sales page would be worse than none.
 
 ## What it is
 
