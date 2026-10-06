@@ -12,6 +12,10 @@ index.html        company page (services, know-how, products, process, contact)
 anlagenbau.html   Pilanda ERP — the industry solution
 kontor.html       Kontor — inventory management
 preise.html       plans and add-ons
+impressum.html    imprint and disclosure (§ 5 ECG, § 25 MedienG)
+datenschutz.html  privacy notice (GDPR art. 13)
+fonts.css         self-hosted IBM Plex, so the site talks to nobody
+fonts/            the woff2 files and the OFL licence
 styles.css        design, all colours as tokens on :root
 pilanda-*.svg     signet and wordmark
 flyer/index.html  sales flyer, four A4 pages, fonts embedded
@@ -53,8 +57,12 @@ white on it 6.3:1).
 The signet and the wordmark are copies from `pilanda_theme/public/logo/`.
 **That is the source** — a logo change belongs there, not here.
 
-Typeface: IBM Plex Sans and IBM Plex Mono (SIL Open Font License), Arial as
-the fallback. That governs marketing; the interfaces of the Pilanda software
+Typeface: IBM Plex Sans and IBM Plex Mono (SIL Open Font License), **served
+from this server**, Arial as the fallback. Loading them from Google would hand
+every visitor's IP address to a company in the United States - on a site with
+no cookies, no scripts, no forms and no analytics that was the only thing left
+that would have to be declared, and the only one that is avoidable. Latin
+subset only: the site is German, and the umlauts are in latin. That governs marketing; the interfaces of the Pilanda software
 run on Noto Sans (decision 2026-10-05).
 
 The site is deliberately **light only** — a sales presence should look the
@@ -102,7 +110,12 @@ Two things worth knowing if this ever has to be undone:
 
 - Contact details are placeholders: `[E-Mail-Adresse]`, `[Telefonnummer]`,
   `[Firmenanschrift]`
-- Imprint and privacy policy are linked in the footer but have no pages
+- **Imprint and privacy notice exist but are incomplete.** The company is not
+  founded yet, so the operator is a natural person for now and every field in
+  square brackets has to be filled in. An incomplete imprint is an
+  administrative offence under § 26 ECG in Austria. Both pages carry
+  `noindex` and say so at the top; they are a template with the right
+  structure, not legal advice.
 - **Prices are missing.** `preise.html` carries the structure - four tiers
   building on each other, eight add-ons, what the introduction costs - but
   every figure is a `[Preis]` placeholder. Twelve of them, plus one
