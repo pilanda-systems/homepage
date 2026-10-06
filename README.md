@@ -32,6 +32,13 @@ The flyer is built for print: open `flyer/index.html` and print to PDF from
 the browser (A4, background graphics on, margins off). The fonts are embedded
 so the result looks the same on any machine.
 
+## What it is
+
+Pilanda is a cloud solution. Hosting, backups and updates are included in the
+price and run in a data centre in the European Union; the customer installs
+nothing. The site says so on the price page, on the ERP page and in the FAQ -
+there is no on-premise option, and no page may suggest one.
+
 ## Design
 
 The basis is the **brand concept for corporate identity and corporate design,
@@ -116,11 +123,10 @@ Two things worth knowing if this ever has to be undone:
   administrative offence under § 26 ECG in Austria. Both pages carry
   `noindex` and say so at the top; they are a template with the right
   structure, not legal advice.
-- **Prices are missing.** `preise.html` carries the structure - four tiers
-  building on each other, eight add-ons, what the introduction costs - but
-  every figure is a `[Preis]` placeholder. Twelve of them, plus one
-  `[zu klären]` on the minimum seat count. A figure on a sales page is a
-  commitment; these have to come from the founders, not from a guess.
+- **Prices are set from the market and sit below it**, but nobody has signed
+  them off. The reference is the per-user ERP ladder of 39 / 86 / 163 euro:
+  Start 35, Handel 69, Projekt 109, Anlagenbau 149. Review before the first
+  offer goes out.
 - The brand concept's core question (consultancy with tools, or software house
   with consultancy) is undecided. Whether "Pilanda ERP" stays a product of its
   own hangs on it — the concept considers that in need of explanation.
