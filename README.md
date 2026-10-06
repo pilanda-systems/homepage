@@ -11,6 +11,7 @@ CNAME             the custom domain, read by GitHub Pages
 index.html        company page (services, know-how, products, process, contact)
 anlagenbau.html   Pilanda ERP — the industry solution
 kontor.html       Kontor — inventory management
+preise.html       plans and add-ons
 styles.css        design, all colours as tokens on :root
 pilanda-*.svg     signet and wordmark
 flyer/index.html  sales flyer, four A4 pages, fonts embedded
@@ -102,7 +103,11 @@ Two things worth knowing if this ever has to be undone:
 - Contact details are placeholders: `[E-Mail-Adresse]`, `[Telefonnummer]`,
   `[Firmenanschrift]`
 - Imprint and privacy policy are linked in the footer but have no pages
-- Prices are missing
+- **Prices are missing.** `preise.html` carries the structure - four tiers
+  building on each other, eight add-ons, what the introduction costs - but
+  every figure is a `[Preis]` placeholder. Twelve of them, plus one
+  `[zu klären]` on the minimum seat count. A figure on a sales page is a
+  commitment; these have to come from the founders, not from a guess.
 - The brand concept's core question (consultancy with tools, or software house
   with consultancy) is undecided. Whether "Pilanda ERP" stays a product of its
   own hangs on it — the concept considers that in need of explanation.

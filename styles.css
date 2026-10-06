@@ -236,6 +236,43 @@ section > .wrap > .stack > p:not(.lede):not(.small),
   gap: 10px;
   min-width: 0;
 }
+/* Price page. The figure is the largest thing on the card, because that is
+   what the visitor came for; the unit stays small beside it so the number
+   does not have to carry it. */
+.price {
+  margin: 4px 0 2px;
+  font-size: clamp(30px, 3.6vw, 40px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+.price span {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--fg-muted);
+  margin-top: 4px;
+}
+/* The feature list is a list, not a row of ticks - a screen reader should
+   be able to count it. The marker is petrol and sits in the gutter. */
+.feat { margin: 2px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.feat li { position: relative; padding-left: 20px; font-size: 13.5px; line-height: 1.45; color: var(--fg-muted); }
+.feat li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  background: var(--petrol);
+}
+/* One recommended tier. Petrol marks it, and the word says it too - colour
+   alone must not be the only cue. */
+.card.is-recommended { border-color: var(--petrol); box-shadow: inset 0 3px 0 var(--petrol); }
+.card.is-recommended .eyebrow::after { content: " \00b7 empfohlen"; color: var(--petrol-deep); }
+
 .panel { background: var(--surface-2); padding: clamp(24px, 3vw, 44px); display: flex; flex-direction: column; gap: 12px; }
 
 .btn {
