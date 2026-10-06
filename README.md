@@ -11,7 +11,6 @@ CNAME             the custom domain, read by GitHub Pages
 index.html        company page (services, know-how, products, process, contact)
 anlagenbau.html   Pilanda — the platform and its modules
 kontor.html       Kontor — inventory management
-preise.html       plans and add-ons
 impressum.html    imprint and disclosure (§ 5 ECG, § 25 MedienG)
 datenschutz.html  privacy notice (GDPR art. 13)
 fonts.css         self-hosted IBM Plex, so the site talks to nobody
@@ -58,7 +57,7 @@ Invented product names on a sales page would be worse than none.
 
 Pilanda is a cloud solution. Hosting, backups and updates are included in the
 price and run in a data centre in the European Union; the customer installs
-nothing. The site says so on the price page, on the ERP page and in the FAQ -
+nothing. The site says so on the product page and in the FAQ -
 there is no on-premise option, and no page may suggest one.
 
 ## Design
@@ -145,14 +144,10 @@ Two things worth knowing if this ever has to be undone:
   administrative offence under § 26 ECG in Austria. Both pages carry
   `noindex` and say so at the top; they are a template with the right
   structure, not legal advice.
-- **Prices are set but nobody has signed them off.** Three tiers, per user
-  and month, always as "ab" prices: Start from 35, Standard from 50, Premium
-  from 90. Kontor is a product of its own and carries no price on this site.
-  Review before the first offer goes out.
-- **Anything with AI is an add-on**, on every tier, never part of a tier.
-  That is a rule, not a price decision - the page states it next to the
-  honest note about the quotation pre-check that was built, measured and
-  switched off.
+- **No prices on the site.** Tiers and figures were taken off again. They
+  live in the offer sheet handed over in person and calculated on the
+  customer's own seat count, not on a page anyone can read without
+  context. Anything with AI stays an add-on there, never part of a tier.
 - The brand concept's core question (consultancy with tools, or software house
-  with consultancy) is undecided. Whether "Pilanda ERP" stays a product of its
-  own hangs on it — the concept considers that in need of explanation.
+  with consultancy) is undecided. Whether the plant-engineering page stays as it is
+  hangs on it — the concept considers that in need of explanation.
