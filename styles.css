@@ -168,7 +168,7 @@ p { margin: 0; }
 /* Anything read as a sentence keeps its measure - including where the
    container used to take care of it. */
 section > .wrap > .stack > p:not(.lede):not(.small),
-.panel > p, dl.faq dd { max-width: var(--measure); }
+.panel > p { max-width: var(--measure); }
 .muted { color: var(--fg-muted); }
 .small { font-size: 14px; line-height: 1.5; }
 .stack { display: flex; flex-direction: column; gap: 14px; }
@@ -246,6 +246,17 @@ section > .wrap > .stack > p:not(.lede):not(.small),
   line-height: 1.05;
   letter-spacing: -0.02em;
   color: var(--fg);
+}
+/* 'ab' steht klein vor der Zahl: der Preis ist ein Einstieg, keine
+   Zusage fuer jeden Fall. */
+.price .from {
+  display: inline;
+  font-size: 0.42em;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--fg-muted);
+  margin-right: 7px;
+  vertical-align: 0.38em;
 }
 .price span {
   display: block;
@@ -353,9 +364,15 @@ a:focus-visible, .btn:focus-visible, button:focus-visible {
 }
 .chain { padding: 0; margin: 0; }
 
-dl.faq { margin: 0; display: flex; flex-direction: column; gap: 20px; }
+/* Fragenliste und Definitionslisten: mehrere Spalten, sobald Platz da ist.
+   Das Mass am Absatz bleibt - es haelt die Zeile lesbar, die Spalten tragen
+   die Breite. Eines ohne das andere ergibt entweder eine schmale Saeule im
+   Leeren oder Zeilen, denen das Auge nicht folgt. */
+dl.faq { margin: 0; display: grid; gap: 22px 48px; align-items: start; }
+@media (min-width: 1000px) { dl.faq { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1500px) { dl.faq { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 dl.faq dt { font-weight: 600; font-size: 16.5px; }
-dl.faq dd { margin: 6px 0 0; color: var(--fg-muted); font-size: 15px; line-height: 1.55; max-width: 72ch; }
+dl.faq dd { margin: 6px 0 0; color: var(--fg-muted); font-size: 15px; line-height: 1.55; max-width: 62ch; }
 
 .foot { border-top: 1px solid var(--line); padding-block: 30px 40px; color: var(--fg-muted); font-size: 14px; }
 .foot a { color: var(--fg-muted); }

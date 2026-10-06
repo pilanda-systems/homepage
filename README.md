@@ -146,9 +146,13 @@ Two things worth knowing if this ever has to be undone:
   `noindex` and say so at the top; they are a template with the right
   structure, not legal advice.
 - **Prices are set but nobody has signed them off.** Three tiers, per user
-  and month: Start 35, Standard 50, Premium 90. Kontor is a product of its
-  own and carries no price on this site. Review before the first offer goes
-  out.
+  and month, always as "ab" prices: Start from 35, Standard from 50, Premium
+  from 90. Kontor is a product of its own and carries no price on this site.
+  Review before the first offer goes out.
+- **Anything with AI is an add-on**, on every tier, never part of a tier.
+  That is a rule, not a price decision - the page states it next to the
+  honest note about the quotation pre-check that was built, measured and
+  switched off.
 - The brand concept's core question (consultancy with tools, or software house
   with consultancy) is undecided. Whether "Pilanda ERP" stays a product of its
   own hangs on it — the concept considers that in need of explanation.
