@@ -136,8 +136,8 @@ Two things worth knowing if this ever has to be undone:
 
 ## Still open
 
-- Contact details are placeholders: `[E-Mail-Adresse]`, `[Telefonnummer]`,
-  `[Firmenanschrift]`
+- Contact: `info@pilanda.systems` is in place and clickable. Phone number and
+  postal address are still placeholders, and § 5 ECG wants both.
 - **Imprint and privacy notice exist but are incomplete.** The company is not
   founded yet, so the operator is a natural person for now and every field in
   square brackets has to be filled in. An incomplete imprint is an
