@@ -1,396 +1,546 @@
-/* Pilanda Systems - brand concept CI/CD, draft v0.2 of 2026-10-05.
+/* Pilanda Systems - Webpraesenz
+   ================================================================
+   Form nach dem Vorbild inscript.team: dunkle Buehne, Riesentypo mit
+   engem Tracking, vollbreite Abschnitte mit viel Luft, ein Akzent,
+   Akkordeon statt Fliesstext, gestapelte Mega-Headline vor dem Kontakt.
 
-   One brand colour, and it says something: grey carries the current state
-   and the break, petrol the fix and the closed gap. There is no second
-   accent - the signal orange and steel blue of v0.1 are gone.
+   Farbe NICHT nach dem Vorbild. Dort Schwarz und Orange, hier das
+   Markenkonzept v0.2: eine Akzentfarbe, Petrol. Grau traegt den
+   Ist-Zustand, Petrol die Loesung.
 
-   The contrast rule from section 7.3 is recomputed and holds here: petrol
-   #008B8A carries only areas, graphics and large type (3.6:1 on paper -
-   enough for graphics, too little for text). Body text, links and button
-   labels use deep petrol #006B6A: 5.5:1 on paper, white on it 6.3:1.
-   Graphit on Papier is 13.8:1.
-
-   Blechgrau #8A9099 stays a line and the current state, as the concept has
-   it - as body text it would be 2.8:1. Secondary text therefore takes a
-   darker Graphit tone.
-
-   Light only, on purpose: a sales presence should look the same on every
-   machine, even when the operating system is set to dark. */
+   Kontraste auf der dunklen Buehne nachgemessen (WCAG 2.1, Graphit
+   #1e2328 als Grund):
+     Papier    #f2efe8  13,79:1  Fliesstext
+     Blechgrau #8a9099   4,92:1  Sekundaertext, Label
+     Petrol hell #009a99 4,59:1  Links und kleine Akzente
+     Petrol    #008b8a   3,82:1  nur Flaechen, Signet, Riesentypo
+   Petrol hell ist die zweite dokumentierte Abweichung vom Konzept,
+   nach --petrol-deep auf Papier. Begruendung steht in der README.
+   ================================================================ */
 
 :root {
-  --bg: #f2efe8;
-  --surface: #ffffff;
-  --surface-2: #eae6dd;
-  --fg: #1e2328;
-  --fg-muted: #565d64;
-  --line: #d2cec4;
-  --line-strong: #8a9099;
+  /* Marke */
   --petrol: #008b8a;
   --petrol-deep: #006b6a;
+  --petrol-light: #009a99;
   --petrol-soft: #dcebea;
+  --papier: #f2efe8;
+  --graphit: #1e2328;
+  --blech: #8a9099;
+
+  /* Buehne */
+  --stage: #141a1f;
+  --stage-2: #1e2328;
+  --stage-line: #2e3640;
+
+  /* Papierflaeche */
+  --bg: var(--papier);
+  --surface: #ffffff;
+  --surface-2: #eae6dd;
+  --fg: var(--graphit);
+  --fg-muted: #565d64;
+  --line: #d2cec4;
+  --line-strong: var(--blech);
+
   --font-sans: "IBM Plex Sans", Arial, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
-  /* No container width any more: the page takes the whole screen and the
-     gutter grows with it. Readability now hangs on the text block. */
-  --gutter: clamp(20px, 4vw, 72px);
-  --measure: 68ch;
-  color-scheme: light;
+
+  --gutter: clamp(20px, 5vw, 96px);
+  --rhythm: clamp(76px, 9vw, 150px);
+  --measure: 62ch;
+
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--fg);
+  background: var(--stage);
+  color: var(--papier);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
+/* ---------- Flaechen ---------- */
+
 .wrap { width: 100%; padding-inline: var(--gutter); }
 
-/* ---------- Header ---------- */
+section { padding-block: var(--rhythm); }
+
+/* Eine Flaeche, die sich ueber die ganze Breite legt. Abschnitte
+   wechseln zwischen Buehne und Papier - das gibt den Rhythmus, den
+   das Vorbild ueber reine Schwarzflaechen loest. */
+.paper {
+  background: var(--papier);
+  color: var(--fg);
+}
+
+.stage { background: var(--stage); }
+.stage-2 { background: var(--stage-2); }
+
+/* ---------- Kopf ---------- */
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--petrol-deep); color: #fff;
+  padding: 12px 18px; font-size: 15px; text-decoration: none;
+}
+.skip:focus { left: 0; }
+
+.brandbar { height: 4px; background: var(--petrol); }
 
 .top {
-  position: sticky;
-  overflow: hidden;
-  top: env(safe-area-inset-top, 0px);
-  z-index: 20;
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
-  border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(8px);
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(20, 26, 31, .88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--stage-line);
 }
-.top-in { display: flex; align-items: center; gap: 24px; min-height: 62px; flex-wrap: wrap; }
-.brandbar { height: 3px; background: var(--petrol); }
 
-/* Skip to content - visible as soon as it takes focus. A skip link that
-   stays invisible helps screen readers only, not the person working
-   without a mouse. */
-.skip {
-  position: absolute;
-  left: 12px;
-  top: -60px;
-  z-index: 40;
-  background: var(--petrol-deep);
-  color: #ffffff;
-  padding: 10px 16px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: top 120ms;
+.top-in {
+  display: flex; align-items: center; gap: 20px;
+  min-height: 74px;
 }
-.skip:focus { top: 12px; }
-.mark { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--fg); }
-.mark img { width: 34px; height: 34px; flex: 0 0 auto; }
+
+.mark { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+.mark img { width: 34px; height: auto; display: block; }
+
+.mark span { display: block; font-size: 11px; color: var(--blech); line-height: 1.3; }
 .mark b {
-  color: var(--fg);
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1.1;
-  display: block;
+  display: block; font-weight: 600; font-size: 17px; color: var(--papier);
+  letter-spacing: -.01em;
 }
-.mark b i { font-weight: 400; font-style: normal; font-size: 0.82em; letter-spacing: 0.08em; }
-.mark span { color: var(--fg-muted); font-size: 11.5px; line-height: 1.2; display: block; }
-.nav { display: flex; gap: 20px; flex-wrap: wrap; margin-left: auto; align-items: center; }
-.nav a { color: var(--fg-muted); text-decoration: none; font-size: 14.5px; }
-.nav a:hover, .nav a:focus-visible { color: var(--petrol-deep); }
-.nav a.here, .nav a[aria-current="page"] {
-  color: var(--fg);
-  font-weight: 600;
-  box-shadow: inset 0 -2px 0 var(--petrol);
+.mark b i {
+  font-style: normal; font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: .18em; color: var(--petrol-light); vertical-align: 2px;
 }
 
-/* ---------- Building blocks ---------- */
+.nav { margin-left: auto; display: flex; gap: 4px; flex-wrap: wrap; }
+.nav a {
+  padding: 7px 14px; border-radius: 999px;
+  font-size: 13.5px; text-decoration: none; color: var(--papier);
+  border: 1px solid transparent;
+  transition: border-color .15s, color .15s;
+}
+.nav a:hover { border-color: var(--stage-line); color: var(--petrol-light); }
+.nav a[aria-current="page"] { border-color: var(--petrol); color: var(--petrol-light); }
 
-/* Links in body text: deep petrol, so they reach 5.5:1 on paper, and
-   underlined, because colour alone must not be the only cue. */
-main a:not(.btn):not(.btn-ghost) {
-  color: var(--petrol-deep);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  text-decoration-color: color-mix(in srgb, var(--petrol-deep) 40%, transparent);
+/* ---------- Typografie ---------- */
+
+h1, h2, h3 { margin: 0; letter-spacing: -.03em; font-weight: 700; }
+
+h1, .display {
+  font-size: clamp(42px, 8.4vw, 124px);
+  line-height: .93;
+  letter-spacing: -.028em;
+  max-width: 17ch;
 }
-main a:not(.btn):not(.btn-ghost):hover,
-main a:not(.btn):not(.btn-ghost):focus-visible {
-  text-decoration-color: currentColor;
+
+h2 {
+  font-size: clamp(28px, 4.2vw, 62px);
+  line-height: 1.02;
+  letter-spacing: -.028em;
+  max-width: 20ch;
 }
+
+h3 { font-size: clamp(18px, 1.5vw, 23px); line-height: 1.25; letter-spacing: -.015em; }
+
+p { margin: 0; max-width: var(--measure); }
+
+.lede {
+  font-size: clamp(17px, 1.45vw, 21px);
+  line-height: 1.55;
+  color: var(--blech);
+  max-width: 54ch;
+}
+.paper .lede { color: var(--fg-muted); }
+
+.small { font-size: 14.5px; line-height: 1.6; }
+.muted { color: var(--blech); }
+.paper .muted { color: var(--fg-muted); }
 
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+  font-size: 11px;
+  letter-spacing: .16em;
   text-transform: uppercase;
-  color: var(--petrol-deep);
-}
-section { padding-block: 56px; border-top: 1px solid var(--line); }
-section:first-of-type { border-top: 0; }
-h1 {
-  max-width: 24ch;
-  font-size: clamp(34px, 6vw, 56px);
-  line-height: 1.06;
-  letter-spacing: -0.02em;
+  color: var(--petrol-light);
   margin: 0;
-  text-wrap: balance;
-  font-weight: 700;
 }
-h2 {
-  max-width: 28ch;
-  font-size: clamp(24px, 3.4vw, 32px);
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  margin: 0;
-  text-wrap: balance;
-  font-weight: 700;
-}
-h3 { font-size: 17px; line-height: 1.3; margin: 0; font-weight: 600; }
-p { margin: 0; }
-.lede { font-size: clamp(17px, 2.2vw, 19px); line-height: 1.55; color: var(--fg-muted); max-width: 62ch; }
-/* Section head: eyebrow and title on the left, lead paragraph beside it on
-   the right. Both keep their measure - the width comes from two columns,
-   not from longer lines. */
+.paper .eyebrow { color: var(--petrol-deep); }
+
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.stack-lg { display: flex; flex-direction: column; gap: clamp(28px, 3.4vw, 54px); }
+
+a { color: var(--petrol-light); }
+.paper a { color: var(--petrol-deep); }
+main a:not(.btn):not(.btn-ghost):not(.mark):not(.nav a) { text-underline-offset: 3px; }
+
+/* Ein Kopf: Label, Zeile, Vorspann - nebeneinander ab Tablet, wie im
+   Vorbild, wo die Headline links und der Text rechts steht. */
 .head { display: flex; flex-direction: column; gap: 14px; }
-@media (min-width: 1100px) {
+
+@media (min-width: 1000px) {
   .head {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    column-gap: clamp(40px, 5vw, 96px);
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 18px clamp(40px, 5vw, 90px);
     align-items: end;
   }
-  .head > .eyebrow { grid-column: 1; }
-  .head > h2 { grid-column: 1; margin-top: 10px; }
-  .head > .lede { grid-column: 2; grid-row: 1 / span 2; }
+  .head .eyebrow { grid-column: 1 / -1; }
+  .head .lede { padding-bottom: 8px; }
 }
 
-/* Anything read as a sentence keeps its measure - including where the
-   container used to take care of it. */
-section > .wrap > .stack > p:not(.lede):not(.small),
-.panel > p { max-width: var(--measure); }
-.muted { color: var(--fg-muted); }
-.small { font-size: 14px; line-height: 1.5; }
-.stack { display: flex; flex-direction: column; gap: 14px; }
-.stack-lg { display: flex; flex-direction: column; gap: 28px; }
+/* ---------- Buehne / Hero ---------- */
 
-.grid { display: grid; gap: 22px; }
-.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-@media (max-width: 860px) { .g3, .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .g2, .g3, .g4 { grid-template-columns: minmax(0, 1fr); } }
-
-.rule { border-top: 2px solid var(--petrol); padding-top: 12px; }
-
-/* Hero: text and process line side by side as soon as there is room.
-   Below that they stack, and the line keeps running horizontally. */
-.hero { display: grid; gap: 40px; align-items: center; }
-@media (min-width: 1100px) {
-  .hero { grid-template-columns: minmax(0, 7fr) minmax(0, 6fr); gap: clamp(40px, 5vw, 96px); }
+.hero {
+  min-height: calc(100svh - 78px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(36px, 5vw, 76px);
+  padding-block: clamp(56px, 7vw, 110px);
 }
 
-/* The process line. Above, the current state: the chain breaks and the gap
-   is visible. Below, the same route unbroken in petrol. */
-.line { display: flex; flex-direction: column; gap: 30px; min-width: 0; }
-.line-row { display: flex; flex-direction: column; gap: 10px; }
-.line-head {
-  margin: 0;
-  max-width: none;
-  font-weight: 500;
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.14em;
+.hero h1 { max-width: 15ch; }
+.hero .lede { max-width: 58ch; font-size: clamp(17px, 1.5vw, 22px); }
+
+/* Das Wort, das die Marke traegt, steht in Petrol - einmal pro Seite. */
+.hl { color: var(--petrol-light); }
+
+/* Gestapelte Mega-Headline: ein Wort je Zeile, wie "GET IN / TOUCH /
+   WITH US" im Vorbild. */
+.stacked {
+  display: block;
+  font-size: clamp(44px, 11vw, 168px);
+  line-height: .88;
+  letter-spacing: -.038em;
+  font-weight: 700;
   text-transform: uppercase;
+  max-width: none;
 }
-.line-head.current { color: var(--fg-muted); }
-.line-head.target { color: var(--petrol-deep); }
-.line-track { display: flex; align-items: center; }
-.line-seg { flex: 1; height: 2px; }
-.line-node { width: 11px; height: 11px; border-radius: 50%; flex: 0 0 auto; }
-.line-labels { display: flex; margin: 0; padding: 0; list-style: none; counter-reset: station; }
-.line-labels li {
-  flex: 1;
-  font-size: 11.5px;
-  line-height: 1.3;
-  text-align: center;
-  min-width: 0;
+.stacked span { display: block; }
+.stacked span:nth-child(even) { color: var(--petrol-light); }
+
+/* ---------- Laufband ---------- */
+
+.band {
+  border-block: 1px solid var(--stage-line);
+  overflow: hidden;
+  padding-block: 18px;
+  background: var(--stage-2);
 }
+
+.band-track {
+  display: flex; gap: 0; width: max-content;
+  animation: band 46s linear infinite;
+}
+
+.band-track span {
+  font-family: var(--font-mono);
+  font-size: clamp(12px, 1.1vw, 15px);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--blech);
+  padding-inline: 26px;
+  white-space: nowrap;
+}
+.band-track span::after { content: "·"; color: var(--petrol); margin-left: 26px; }
+
+@keyframes band { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .band-track { animation: none; width: 100%; flex-wrap: wrap; justify-content: center; }
+}
+
+/* ---------- Schaltflaechen ---------- */
+
+.btn-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+.btn, .btn-ghost {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 26px;
+  border-radius: 999px;
+  font-size: 15px; font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background .15s, border-color .15s, color .15s;
+}
+
+/* Papier auf Petrol tief: 6,3:1. Graphit auf Petrol waere 3,8:1 und
+   fuer eine Beschriftung zu wenig. */
+.btn { background: var(--petrol-deep); color: #fff; }
+.btn:hover { background: var(--petrol); }
+
+.btn-ghost { border-color: var(--blech); color: var(--papier); }
+.btn-ghost:hover { border-color: var(--petrol-light); color: var(--petrol-light); }
+.paper .btn-ghost { border-color: var(--line-strong); color: var(--fg); }
+.paper .btn-ghost:hover { border-color: var(--petrol-deep); color: var(--petrol-deep); }
+
+.btn::after { content: "→"; font-weight: 400; }
+
+/* ---------- Raster ---------- */
+
+.grid { display: grid; gap: clamp(1px, .2vw, 1px); }
+.g2, .g3, .g4 { grid-template-columns: 1fr; }
+
+@media (min-width: 720px) { .g2, .g3, .g4 { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1080px) { .g3 { grid-template-columns: repeat(3, 1fr); }
+                             .g4 { grid-template-columns: repeat(4, 1fr); } }
+
+/* Karten ohne Kasten: eine Haarlinie oben, wie die Service-Eintraege
+   im Vorbild. Der Kasten kam aus der alten Fassung und machte aus
+   jedem Absatz ein Kaestchen. */
+.card, .rule {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 26px 0 0;
+  border-top: 1px solid var(--stage-line);
+}
+.paper .card, .paper .rule { border-top-color: var(--line); }
+
+.grid .card, .grid .rule { padding-right: clamp(0px, 2vw, 34px); }
+
+.card h3, .rule h3 { margin-top: 2px; }
+
+/* Nummer vor dem Titel, wie der Index einer Leistungsliste. */
+.card[data-nr]::before, .rule[data-nr]::before {
+  content: attr(data-nr);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .16em;
+  color: var(--petrol-light);
+}
+.paper .card[data-nr]::before, .paper .rule[data-nr]::before { color: var(--petrol-deep); }
+
+/* Grosse Produktkarte */
+.feature {
+  display: flex; flex-direction: column; gap: 16px;
+  padding: clamp(28px, 3vw, 46px);
+  background: var(--stage-2);
+  border: 1px solid var(--stage-line);
+}
+.paper .feature { background: var(--surface); border-color: var(--line); }
+.feature h3 { font-size: clamp(26px, 3vw, 40px); letter-spacing: -.03em; }
+.feature .btn-row { margin-top: auto; padding-top: 8px; }
+
+.grid.features { gap: clamp(16px, 1.6vw, 24px); }
+
+/* ---------- Gegenueberstellung ---------- */
+
+.split { display: grid; gap: clamp(28px, 3vw, 60px); }
+@media (min-width: 860px) { .split { grid-template-columns: 1fr 1fr; } }
+
+.chain { list-style: none; margin: 10px 0 12px; padding: 0; }
+.chain li {
+  padding: 11px 0 11px 26px;
+  border-bottom: 1px solid var(--stage-line);
+  position: relative;
+  font-size: 15.5px;
+}
+.paper .chain li { border-bottom-color: var(--line); }
+.chain li::before {
+  content: ""; position: absolute; left: 0; top: 19px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--blech);
+}
+.chain.ok li::before { background: var(--petrol); }
+
+/* ---------- Prozesslinie ---------- */
+
+.line { display: flex; flex-direction: column; gap: clamp(26px, 3vw, 44px); }
+
+.line-head {
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: 600; letter-spacing: -.01em;
+  margin-bottom: 14px;
+  max-width: none;
+}
+.line-head.current { color: var(--blech); }
+.line-head.target { color: var(--petrol-light); }
+.paper .line-head.target { color: var(--petrol-deep); }
+
+.line-track { display: flex; align-items: center; gap: 0; }
+.line-node {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--blech); flex: none;
+}
+.line-seg { height: 2px; background: var(--blech); flex: 1 1 auto; }
+.line-seg.gap {
+  background: repeating-linear-gradient(90deg, var(--stage-line) 0 5px, transparent 5px 11px);
+}
+.line-row.target .line-node { background: var(--petrol); }
+.line-row.target .line-seg { background: var(--petrol); }
+
+.line-labels {
+  list-style: none; margin: 12px 0 0; padding: 0;
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--blech);
+}
+.line-labels li { flex: 1; text-align: center; }
 .line-labels li:first-child { text-align: left; }
 .line-labels li:last-child { text-align: right; }
 
-.current .line-seg, .line-row.current .line-seg { background: var(--line-strong); }
-.line-row.current .line-seg.gap { background: transparent; }
-.line-row.current .line-node { background: var(--surface); border: 2px solid var(--line-strong); box-sizing: border-box; }
-.line-row.current .line-labels li { color: var(--fg-muted); }
-.line-row.target .line-seg { background: var(--petrol); }
-.line-row.target .line-node { background: var(--petrol); }
-.line-row.target .line-labels li { color: var(--fg); }
-.line-note { font-size: 12.5px; line-height: 1.45; color: var(--fg-muted); }
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-}
-/* Price page. The figure is the largest thing on the card, because that is
-   what the visitor came for; the unit stays small beside it so the number
-   does not have to carry it. */
-.price {
-  margin: 4px 0 2px;
-  font-size: clamp(30px, 3.6vw, 40px);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  color: var(--fg);
-}
-/* 'ab' steht klein vor der Zahl: der Preis ist ein Einstieg, keine
-   Zusage fuer jeden Fall. */
-.price .from {
-  display: inline;
-  font-size: 0.42em;
-  font-weight: 500;
-  letter-spacing: 0;
-  color: var(--fg-muted);
-  margin-right: 7px;
-  vertical-align: 0.38em;
-}
-.price span {
-  display: block;
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: var(--fg-muted);
-  margin-top: 4px;
-}
-/* The feature list is a list, not a row of ticks - a screen reader should
-   be able to count it. The marker is petrol and sits in the gutter. */
-.feat { margin: 2px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
-.feat li { position: relative; padding-left: 20px; font-size: 13.5px; line-height: 1.45; color: var(--fg-muted); }
-.feat li::before {
-  content: "";
-  position: absolute;
-  left: 2px;
-  top: 8px;
-  width: 8px;
-  height: 8px;
-  background: var(--petrol);
-}
-/* One recommended tier. Petrol marks it, and the word says it too - colour
-   alone must not be the only cue. */
-.card.is-recommended { border-color: var(--petrol); box-shadow: inset 0 3px 0 var(--petrol); }
-.card.is-recommended .eyebrow::after { content: " \00b7 empfohlen"; color: var(--petrol-deep); }
+.line-note { margin-top: 12px; font-size: 14px; color: var(--blech); max-width: 70ch; }
+.paper .line-note { color: var(--fg-muted); }
 
-.panel { background: var(--surface-2); padding: clamp(24px, 3vw, 44px); display: flex; flex-direction: column; gap: 12px; }
+/* ---------- Akkordeon ---------- */
 
-.btn {
-  display: inline-block;
-  background: var(--petrol-deep);
-  color: #ffffff;
-  padding: 13px 22px;
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  border: 1px solid var(--petrol-deep);
-}
-.btn:hover, .btn:focus-visible { background: transparent; color: var(--petrol-deep); }
-.btn-ghost {
-  display: inline-block;
-  padding: 13px 22px;
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  color: var(--fg);
-  border: 1px solid var(--line);
-}
-.btn-ghost:hover, .btn-ghost:focus-visible { border-color: var(--petrol-deep); color: var(--petrol-deep); }
-.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.faq { margin: 0; border-top: 1px solid var(--stage-line); }
+.paper .faq { border-top-color: var(--line); }
 
-a:focus-visible, .btn:focus-visible, button:focus-visible {
-  outline: 2px solid var(--petrol-deep);
-  outline-offset: 3px;
-}
+.faq details { border-bottom: 1px solid var(--stage-line); }
+.paper .faq details { border-bottom-color: var(--line); }
 
-/* Module row: dot, name, entry points */
-/* Produktname neben der Funktionsbezeichnung: das Modul heisst so, aber
-   der Besucher sucht nach der Funktion. */
-.modname {
-  display: inline-block;
-  margin-left: 6px;
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  color: var(--petrol-deep);
-  white-space: nowrap;
-}
-
-.mod { display: flex; gap: 11px; align-items: flex-start; min-width: 0; }
-.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--petrol); margin-top: 8px; flex: 0 0 auto; }
-.dot.open { background: transparent; border: 2px dashed var(--line-strong); }
-
-/* Process chain of the supplier portal */
-.flow { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); }
-@media (max-width: 860px) { .flow { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 18px; } }
-@media (max-width: 440px) { .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.step { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
-.step-dots { display: flex; align-items: center; height: 26px; }
-.step-bar { flex: 1; height: 2px; background: var(--line-strong); }
-.step-bar.done { background: var(--petrol); }
-.step-bar.none { background: transparent; }
-.step-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--petrol); flex: 0 0 auto; }
-.step-dot.now { width: 22px; height: 22px; background: var(--petrol); border: 3px solid var(--fg); }
-.step-dot.todo { background: var(--surface); border: 2px solid var(--line-strong); }
-.step-label { font-size: 12.5px; line-height: 1.3; text-align: center; color: var(--fg-muted); }
-.step-label.now { color: var(--fg); font-weight: 700; }
-
-/* Before and after */
-.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); }
-@media (max-width: 640px) { .split { grid-template-columns: minmax(0, 1fr); } }
-.split > div { padding: 22px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.split > div + div { border-left: 1px solid var(--line); background: var(--surface); box-shadow: inset 3px 0 0 var(--petrol); }
-@media (max-width: 640px) { .split > div + div { border-left: 0; border-top: 1px solid var(--line); } }
-
-.chain { display: flex; flex-wrap: wrap; gap: 8px; }
-.chain li {
+.faq summary {
+  cursor: pointer;
   list-style: none;
-  font-size: 13.5px;
-  padding: 6px 11px;
-  border: 1px solid var(--line);
-  background: var(--surface);
+  display: flex; align-items: flex-start; gap: 20px;
+  padding: clamp(18px, 1.8vw, 26px) 0;
+  font-size: clamp(17px, 1.7vw, 24px);
+  font-weight: 600;
+  letter-spacing: -.02em;
 }
-.chain { padding: 0; margin: 0; }
+.faq summary::-webkit-details-marker { display: none; }
 
-/* Fragenliste und Definitionslisten: mehrere Spalten, sobald Platz da ist.
-   Das Mass am Absatz bleibt - es haelt die Zeile lesbar, die Spalten tragen
-   die Breite. Eines ohne das andere ergibt entweder eine schmale Saeule im
-   Leeren oder Zeilen, denen das Auge nicht folgt. */
-dl.faq { margin: 0; display: grid; gap: 22px 48px; align-items: start; }
-@media (min-width: 1000px) { dl.faq { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1500px) { dl.faq { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-dl.faq dt { font-weight: 600; font-size: 16.5px; }
-dl.faq dd { margin: 6px 0 0; color: var(--fg-muted); font-size: 15px; line-height: 1.55; max-width: 62ch; }
+.faq summary::after {
+  content: "+";
+  margin-left: auto;
+  font-weight: 400;
+  font-size: 1.4em;
+  line-height: 1;
+  color: var(--petrol-light);
+  transition: transform .18s;
+  flex: none;
+}
+.paper .faq summary::after { color: var(--petrol-deep); }
+.faq details[open] summary::after { transform: rotate(45deg); }
 
-.foot { border-top: 1px solid var(--line); padding-block: 30px 40px; color: var(--fg-muted); font-size: 14px; }
-.foot a { color: var(--fg-muted); }
-.foot-in { display: flex; gap: 22px; flex-wrap: wrap; align-items: baseline; }
-.foot time { font-variant-numeric: tabular-nums; }
-.foot .spacer { margin-left: auto; }
+.faq summary:hover { color: var(--petrol-light); }
+.paper .faq summary:hover { color: var(--petrol-deep); }
+.faq summary:focus-visible { outline: 2px solid var(--petrol-light); outline-offset: 4px; }
+
+.faq .answer {
+  padding: 0 clamp(40px, 5vw, 80px) clamp(22px, 2.2vw, 30px) 0;
+  color: var(--blech);
+  max-width: 78ch;
+  font-size: 16px;
+}
+.paper .faq .answer { color: var(--fg-muted); }
+
+/* ---------- Kontaktflaeche ---------- */
+
+.panel {
+  display: flex; flex-direction: column; gap: 18px;
+}
+
+.kontakt-daten {
+  display: flex; flex-wrap: wrap; gap: 10px clamp(30px, 4vw, 70px);
+  padding-top: clamp(22px, 2.5vw, 36px);
+  border-top: 1px solid var(--stage-line);
+  margin-top: clamp(16px, 2vw, 28px);
+}
+.paper .kontakt-daten { border-top-color: var(--line); }
+
+.kontakt-daten div { display: flex; flex-direction: column; gap: 3px; }
+.kontakt-daten dt, .kontakt-daten .k {
+  font-family: var(--font-mono); font-size: 10.5px;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--blech);
+}
+.kontakt-daten .v { font-size: clamp(17px, 1.6vw, 22px); font-weight: 600; letter-spacing: -.02em; }
 
 .tag {
   display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-  border: 1px solid var(--line-strong);
-  padding: 1px 6px;
+  font-family: var(--font-mono); font-size: 10.5px;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--blech);
+  border: 1px solid var(--stage-line);
+  border-radius: 999px; padding: 3px 10px;
+}
+.paper .tag { border-color: var(--line); color: var(--fg-muted); }
+
+.modname {
+  font-family: var(--font-mono); font-weight: 400;
+  font-size: .62em; letter-spacing: .04em;
+  color: var(--petrol-light); vertical-align: .22em;
+}
+.paper .modname { color: var(--petrol-deep); }
+
+/* ---------- Fuss ---------- */
+
+.foot {
+  background: var(--stage-2);
+  border-top: 1px solid var(--stage-line);
+  padding-block: clamp(34px, 4vw, 58px);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
+.foot-in {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 10px 26px;
+  font-size: 13.5px; color: var(--blech);
 }
+.foot-in a { color: var(--blech); text-decoration: none; }
+.foot-in a:hover { color: var(--petrol-light); text-decoration: underline; }
+.foot-in .spacer { flex: 1 1 auto; }
+
+/* ---------- Druck ---------- */
+
+@media print {
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .top, .band, .skip, .btn, .btn-ghost { display: none; }
+  .paper, .stage, .stage-2, .feature, .foot { background: #fff !important; color: #000 !important; }
+  section { padding-block: 14pt; }
+  h1, .display { font-size: 26pt; }
+  h2 { font-size: 17pt; }
+  .faq details { border-color: #999; }
+  .faq .answer { color: #000; }
+  details:not([open]) > *:not(summary) { display: revert; }
+}
+
+/* ---------- Begriffsliste ---------- */
+
+/* Impressum und Datenschutz: Begriff und Erklaerung, immer sichtbar.
+   Ein Akkordeon waere hier falsch - eine Pflichtangabe versteckt man
+   nicht hinter einem Klick. */
+.deflist { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+
+.deflist > div {
+  padding-block: clamp(16px, 1.6vw, 24px);
+  border-bottom: 1px solid var(--line);
+}
+
+@media (min-width: 900px) {
+  .deflist > div {
+    display: grid;
+    grid-template-columns: minmax(0, 22ch) minmax(0, 1fr);
+    gap: 10px clamp(30px, 4vw, 70px);
+    align-items: start;
+  }
+}
+
+.deflist dt {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--petrol-deep);
+  padding-top: 4px;
+}
+
+.deflist dd { margin: 6px 0 0; max-width: 82ch; font-size: 15.5px; }
+@media (min-width: 900px) { .deflist dd { margin: 0; } }
+.deflist dd .muted { display: block; margin-top: 6px; font-size: 13.5px; }
+
+/* Auf der Buehne dieselbe Liste in den hellen Werten */
+.stage .deflist, .stage-2 .deflist { border-top-color: var(--stage-line); }
+.stage .deflist > div, .stage-2 .deflist > div { border-bottom-color: var(--stage-line); }
+.stage .deflist dt, .stage-2 .deflist dt { color: var(--petrol-light); }

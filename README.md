@@ -69,10 +69,37 @@ change them there, not in the pages.
 | Token | Value | Role |
 |---|---|---|
 | `--petrol` | `#008B8A` | signet, areas, graphics, large type |
-| `--petrol-deep` | `#006B6A` | body text, links, button labels |
-| `--fg` | `#1E2328` | body text, headlines (Graphit) |
-| `--line-strong` | `#8A9099` | lines, current state (Blechgrau) |
-| `--bg` | `#F2EFE8` | background (Papier) |
+| `--petrol-deep` | `#006B6A` | body text, links and button labels on Papier |
+| `--petrol-light` | `#009A99` | links and small accents on the dark stage |
+| `--fg` / `--graphit` | `#1E2328` | body text and headlines on Papier |
+| `--stage` | `#141A1F` | the dark stage |
+| `--line-strong` / `--blech` | `#8A9099` | lines, current state, secondary text (Blechgrau) |
+| `--bg` / `--papier` | `#F2EFE8` | the light surface |
+
+## Form
+
+The layout follows inscript.team: a dark stage, display type at 8.4vw with
+tight tracking, full-bleed sections alternating between stage and Papier, one
+accent, an accordion instead of running prose, and a stacked headline above the
+contact. **The colour does not follow it** - that site is black and orange, this
+one carries the brand concept's single accent.
+
+Sections are `.stage`, `.stage-2` or `.paper`; the measure lives on the text
+block, not on the container, so a surface fills the screen while a line stays
+readable.
+
+Contrast on the stage, measured against Graphit `#1E2328`:
+
+| | | |
+|---|---:|---|
+| Papier `#F2EFE8` | 13.79:1 | body text |
+| Blechgrau `#8A9099` | 4.92:1 | secondary text, labels |
+| Petrol light `#009A99` | 4.59:1 | links, small accents |
+| Petrol `#008B8A` | 3.82:1 | areas, signet, display type only |
+
+`--petrol-light` is the second documented deviation from the concept, after
+`--petrol-deep`: the concept's petrol reaches only 3.82:1 on Graphit and cannot
+carry a link. It is the same hue lifted 3% in lightness.
 
 **One brand colour, no second accent.** Grey carries the current state and the
 break, petrol the fix and the closed gap.
@@ -93,8 +120,9 @@ that would have to be declared, and the only one that is avoidable. Latin
 subset only: the site is German, and the umlauts are in latin. That governs marketing; the interfaces of the Pilanda software
 run on Noto Sans (decision 2026-10-05).
 
-The site is deliberately **light only** — a sales presence should look the
-same on every machine, even when the operating system is set to dark.
+The site ignores the operating system's dark-mode setting: the stage and the
+Papier surfaces are part of the design, not a theme, and a sales presence should
+look the same on every machine.
 
 ## Accessibility
 
@@ -106,9 +134,9 @@ What the review changed:
 - Every page starts with a skip link to the content, visible on focus.
 - The current page carries `aria-current="page"` and a visible marker.
 - English terms inside the German prose carry `lang="en"`.
-
-Still open: there is no clickable contact (`mailto:`, `tel:`) because the
-contact details are placeholders.
+- The questions are a `<details>` accordion, so they are reachable by keyboard
+  and open in print. The imprint and the privacy notice keep a plain definition
+  list: a mandatory disclosure does not go behind a click.
 
 ## Publishing
 
