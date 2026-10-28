@@ -97,6 +97,35 @@ section { padding-block: var(--rhythm); }
 .skip:focus { left: 0; }
 
 .brandbar { height: 4px; background: var(--petrol); }
+/* Work in Progress
+   ----------------------------------------------------------------
+   Ein Band unter dem Markenband, auf jeder Seite. Es nennt den Stand
+   der Seite, nicht den des Unternehmens - deshalb Blechgrau und kein
+   Petrol: Petrol traegt hier die Loesung, nicht den Vorbehalt. */
+.wip {
+  background: var(--stage-2);
+  border-bottom: 1px solid var(--stage-line);
+  color: var(--blech);
+  font-size: .82rem;
+  line-height: 1.5;
+}
+.wip-in {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem .75rem;
+  align-items: baseline;
+  padding-block: .55rem;
+}
+.wip b {
+  color: var(--papier);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: .72rem;
+}
+@media (max-width: 640px) {
+  .wip-in { flex-direction: column; gap: .15rem; }
+}
+
 
 .top {
   position: sticky; top: 0; z-index: 50;
