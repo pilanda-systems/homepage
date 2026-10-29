@@ -242,6 +242,12 @@ main a:not(.btn):not(.btn-ghost):not(.mark):not(.nav a) { text-underline-offset:
 .hero h1 { max-width: 15ch; }
 .hero .lede { max-width: 58ch; font-size: clamp(17px, 1.5vw, 22px); }
 
+/* Haltestelle: die ganze Seite ist eine Nachricht. Die Buehne laesst ihren
+   Abschnittsrhythmus fallen und die Hoehe von einem Schirm, damit der Fuss
+   mit Impressum und Datenschutz ohne Scrollen sichtbar bleibt. */
+.holding { padding-block: 0; }
+.holding .hero { min-height: 0; padding-block: clamp(72px, 12vh, 160px); }
+
 /* Das Wort, das die Marke traegt, steht in Petrol - einmal pro Seite. */
 .hl { color: var(--petrol-light); }
 

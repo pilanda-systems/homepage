@@ -6,19 +6,21 @@ what gets served.
 **Language rule:** code, comments and documentation in English; every string a
 visitor reads is German.
 
+**The site is a holding page.** Since 29.10.2026 the domain serves one page
+that says the site is being rebuilt. The company page, the two product pages
+and the sales flyer were taken out of `main`; they are in the history at
+`b56fc23` and come back with `git checkout b56fc23 -- <file>`. The stylesheet
+keeps every block they used, so nothing has to be rebuilt to put them back.
+
 ```
 CNAME             the custom domain, read by GitHub Pages
-index.html        company page (services, know-how, products, process, contact)
-anlagenbau.html   Pilanda — the platform and its modules
-kontor.html       Kontor — inventory management
+index.html        holding page — the whole site for now
 impressum.html    imprint and disclosure (§ 5 ECG, § 25 MedienG)
 datenschutz.html  privacy notice (GDPR art. 13)
 fonts.css         self-hosted IBM Plex, so the site talks to nobody
 fonts/            the woff2 files and the OFL licence
 styles.css        design, all colours as tokens on :root
 pilanda-*.svg     signet and wordmark
-flyer/index.html  sales flyer, four A4 pages, fonts embedded
-flyer/source/     the four sheets separately, as they were set
 ```
 
 Serve it locally:
@@ -27,9 +29,10 @@ Serve it locally:
 python -m http.server 8080
 ```
 
-The flyer is built for print: open `flyer/index.html` and print to PDF from
-the browser (A4, background graphics on, margins off). The fonts are embedded
-so the result looks the same on any machine.
+The holding page carries `noindex`, like the two legal pages: what stood here
+before should not keep turning up in search results while there is nothing to
+send a reader to. Taking that line out is the first step of putting the site
+back.
 
 ## Naming
 
@@ -57,8 +60,9 @@ Invented product names on a sales page would be worse than none.
 
 Pilanda is a cloud solution. Hosting, backups and updates are included in the
 price and run in a data centre in the European Union; the customer installs
-nothing. The site says so on the product page and in the FAQ -
-there is no on-premise option, and no page may suggest one.
+nothing. The product page and the FAQ said so while they were up, and they
+have to say it again when they come back - there is no on-premise option, and
+no page may suggest one.
 
 ## Design
 
@@ -164,6 +168,9 @@ Two things worth knowing if this ever has to be undone:
 
 ## Still open
 
+- **Why the site is down is not written anywhere here**, and it should be
+  before someone reads the history and guesses. What comes back, and in what
+  form, is open.
 - Contact: `info@pilanda.systems` is in place and clickable. Phone number and
   postal address are still placeholders, and § 5 ECG wants both.
 - **Imprint and privacy notice exist but are incomplete.** The company is not
