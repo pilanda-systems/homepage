@@ -21,6 +21,7 @@ fonts.css         self-hosted IBM Plex, so the site talks to nobody
 fonts/            the woff2 files and the OFL licence
 styles.css        design, all colours as tokens on :root
 pilanda-*.svg     signet and wordmark
+signature/        the logo the mail signatures load by URL
 ```
 
 Serve it locally:
@@ -28,6 +29,11 @@ Serve it locally:
 ```bash
 python -m http.server 8080
 ```
+
+`signature/logo.png` is the wordmark the Outlook signatures pull in, 540 x 42
+so it stays sharp at the 270 x 21 they display. Nothing on the site links to
+it. **The path must not move.** It sits in mail that has already been sent,
+and a signature whose logo 404s looks worse than one without a logo.
 
 The holding page carries `noindex`, like the two legal pages: what stood here
 before should not keep turning up in search results while there is nothing to
