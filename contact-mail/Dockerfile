@@ -6,6 +6,8 @@ COPY Program.cs .
 RUN dotnet publish --no-restore -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0.14-alpine3.24
+# Links the package to this repository, which lets the workflow token publish it.
+LABEL org.opencontainers.image.source=https://github.com/pilanda-systems/homepage
 WORKDIR /app
 COPY --from=build /app .
 USER app

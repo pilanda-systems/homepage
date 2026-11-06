@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      IMAGE: ghcr.io/pilanda-systems/contact-mail:${{ github.sha }}
+      IMAGE: ghcr.io/pilanda-systems/homepage/contact-mail:${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
