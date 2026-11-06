@@ -1,1 +1,0 @@
-import{u as e}from"./index-DDUA8DFR.js";import{t}from"./legal-page-B4_f9Dua.js";var n=e();function r(){return(0,n.jsx)(t,{document:`Impressum`})}export{r as component};

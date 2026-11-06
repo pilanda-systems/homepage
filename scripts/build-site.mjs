@@ -31,26 +31,17 @@ const PAGES = {
   "/agb": "agb.html",
 };
 
-// Brand and print material, and the routes that need a server.
-const REMOVED = [
-  "src/routes/bot-wissen.tsx",
-  "src/routes/briefpapier.tsx",
-  "src/routes/corporate-design-expose.tsx",
-  "src/routes/corporate-design.tsx",
-  "src/routes/email-signatur.tsx",
-  "src/routes/powerpoint.tsx",
-  "src/routes/social-media.tsx",
-  "src/routes/visitenkarten.tsx",
-  "src/routes/api",
-  "public/downloads",
-  "public/logo",
-  "public/stempel",
-];
+// What stays. These are allow lists on purpose: the web app keeps gaining
+// internal pages, and a new one must stay out without anyone listing it here.
+const KEPT_ROUTES = ["__root.tsx", "index.tsx", "projektplan.tsx", "impressum.tsx", "datenschutz.tsx", "agb.tsx"];
+const KEPT_PUBLIC = ["favicon.svg", "robots.txt"];
 
 // Must not reach the public output, whatever happens upstream.
-const FORBIDDEN_FILE = /visitenkarte|briefpapier|corporate-design|praesentation|bot-wissen|stempel/i;
+const FORBIDDEN_FILE = /visitenkarte|briefpapier|corporate-design|praesentation|bot-wissen|stempel|google-unternehmensprofil/i;
 // An actual key, not the bare prefix: the Supabase client checks for that.
 const FORBIDDEN_TEXT = /sb_secret_[A-Za-z0-9_-]{20,}|SUPABASE_SERVICE_ROLE_KEY=/;
+// The chat does not ship, so no page may promise it or describe its processing.
+const FORBIDDEN_PAGE_TEXT = /Pi[·-]Chat/;
 
 const read = (file) => readFileSync(inWeb(file), "utf8").replace(/\r\n/g, "\n");
 
@@ -91,11 +82,18 @@ export async function submitInquiryDirect({ data }: { data: Inquiry }) {
 }
 `;
 
-function adaptForStaticHosting() {
-  for (const path of REMOVED) {
-    if (!existsSync(inWeb(path))) throw new Error(`${path}: expected path is gone, adapt this script`);
-    rmSync(inWeb(path), { recursive: true });
+function keepOnly(dir, kept) {
+  for (const name of kept) {
+    if (!existsSync(inWeb(dir, name))) throw new Error(`${dir}/${name}: expected path is gone, adapt this script`);
   }
+  for (const name of readdirSync(inWeb(dir))) {
+    if (!kept.includes(name)) rmSync(inWeb(dir, name), { recursive: true });
+  }
+}
+
+function adaptForStaticHosting() {
+  keepOnly("src/routes", KEPT_ROUTES);
+  keepOnly("public", KEPT_PUBLIC);
 
   // Pi-Chat needs a server, so it does not ship at all.
   writeFileSync(
@@ -132,6 +130,10 @@ function adaptForStaticHosting() {
   const chat = legal.match(/ *\{\n *heading: "Pi·Chat und KI-Verarbeitung",\n *body: ".*",\n *\},\n/);
   if (!chat) throw new Error("src/lib/pilanda-legal.ts: Pi-Chat section is gone, adapt this script");
   writeFileSync(inWeb("src/lib/pilanda-legal.ts"), legal.replace(chat[0], ""));
+  edit("src/routes/datenschutz.tsx", [
+    ["Website, Projektanfragen, E-Mail und Pi·Chat.", "Website, Projektanfragen und E-Mail."],
+    ["zu Website, Kontakt und Pi·Chat.", "zu Website und Kontakt."],
+  ]);
 }
 
 function build() {
@@ -206,6 +208,9 @@ function publish(pages) {
     if (FORBIDDEN_FILE.test(file.slice(out.length))) throw new Error(`forbidden file in output: ${file}`);
     if (/\.(html|js|css|txt)$/.test(file) && FORBIDDEN_TEXT.test(readFileSync(file, "utf8")))
       throw new Error(`secret marker in ${file}`);
+  }
+  for (const [file, html] of Object.entries(pages)) {
+    if (FORBIDDEN_PAGE_TEXT.test(html)) throw new Error(`${file} still mentions the chat, adapt this script`);
   }
 }
 
