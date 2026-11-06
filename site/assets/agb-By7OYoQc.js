@@ -1,1 +1,0 @@
-import{u as e}from"./index-Dgaq9pK5.js";import{t}from"./legal-page-l3sKr8a-.js";var n=e();function r(){return(0,n.jsx)(t,{document:`AGB`})}export{r as component};

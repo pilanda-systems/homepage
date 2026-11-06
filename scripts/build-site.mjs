@@ -42,6 +42,7 @@ const FORBIDDEN_FILE = /visitenkarte|briefpapier|corporate-design|praesentation|
 const FORBIDDEN_TEXT = /sb_secret_[A-Za-z0-9_-]{20,}|SUPABASE_SERVICE_ROLE_KEY=/;
 // The chat does not ship, so no page may promise it or describe its processing.
 const FORBIDDEN_PAGE_TEXT = /Pi[·-]Chat/;
+const LEGAL_PAGES = ["impressum.html", "datenschutz.html", "agb.html"];
 
 const read = (file) => readFileSync(inWeb(file), "utf8").replace(/\r\n/g, "\n");
 
@@ -130,9 +131,27 @@ function adaptForStaticHosting() {
   const chat = legal.match(/ *\{\n *heading: "Pi·Chat und KI-Verarbeitung",\n *body: ".*",\n *\},\n/);
   if (!chat) throw new Error("src/lib/pilanda-legal.ts: Pi-Chat section is gone, adapt this script");
   writeFileSync(inWeb("src/lib/pilanda-legal.ts"), legal.replace(chat[0], ""));
+  // Published as final by decision of Dominik Boeckle, 06.11.2026: no draft
+  // wording on any legal page, and the imprint carries a phone number.
   edit("src/routes/datenschutz.tsx", [
-    ["Website, Projektanfragen, E-Mail und Pi·Chat.", "Website, Projektanfragen und E-Mail."],
-    ["zu Website, Kontakt und Pi·Chat.", "zu Website und Kontakt."],
+    ["Website, Projektanfragen, E-Mail und Pi·Chat. Rechtsentwurf mit offenen Angaben.", "Website, Projektanfragen und E-Mail."],
+    ["zu Website, Kontakt und Pi·Chat. Rechtsentwurf mit offenen Angaben.", "zu Website und Kontakt."],
+  ]);
+  edit("src/routes/agb.tsx", [
+    ["Entwurf der Allgemeinen Geschäftsbedingungen von", "Allgemeine Geschäftsbedingungen von"],
+    ["AGB-Entwurf für die Leistungen", "AGB für die Leistungen"],
+  ]);
+  edit("src/lib/pilanda-legal.ts", [
+    ["body: `E-Mail · ${companyContact.email}`,", "body: `E-Mail · ${companyContact.email}\\nTelefon · 0670 401 30 33`,"],
+  ]);
+  edit("src/components/home/legal-page.tsx", [
+    [
+      `        <p className="mt-6 border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">
+          Entwurf. Fehlende Firmendaten und offene rechtliche Angaben sind vor Veröffentlichung zu ergänzen und zu prüfen.
+        </p>
+`,
+      "",
+    ],
   ]);
 }
 
@@ -211,6 +230,7 @@ function publish(pages) {
   }
   for (const [file, html] of Object.entries(pages)) {
     if (FORBIDDEN_PAGE_TEXT.test(html)) throw new Error(`${file} still mentions the chat, adapt this script`);
+    if (LEGAL_PAGES.includes(file) && /entwurf/i.test(html)) throw new Error(`${file} is marked as a draft, adapt this script`);
   }
 }
 
