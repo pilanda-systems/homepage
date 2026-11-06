@@ -1,194 +1,55 @@
 # Pilanda Systems — website
 
-Static HTML, no build, no generator. What is in the repository is exactly
-what gets served.
+The public site at pilanda.systems. `site/` is generated: what is in that
+folder is exactly what gets served. Do not edit it by hand, the next sync
+replaces it.
 
 **Language rule:** code, comments and documentation in English; every string a
 visitor reads is German.
 
-**The site is a holding page.** Since 29.10.2026 the domain serves one page
-that says the site is being rebuilt. The company page, the two product pages
-and the sales flyer were taken out of `main`; they are in the history at
-`b56fc23` and come back with `git checkout b56fc23 -- <file>`. The stylesheet
-keeps every block they used, so nothing has to be rebuilt to put them back.
+**Where the content comes from.** Content and design are made in the private
+repository `pilanda-systems-web` (Lovable). Every night `sync-web.yml` rebuilds
+its public pages as static files and commits them here, which publishes them.
+Nothing happens when the web app has not changed.
 
 ```
-CNAME             the custom domain, read by GitHub Pages
-index.html        holding page — the whole site for now
-impressum.html    imprint and disclosure (§ 5 ECG, § 25 MedienG)
-datenschutz.html  privacy notice (GDPR art. 13)
-fonts.css         self-hosted IBM Plex, so the site talks to nobody
-fonts/            the woff2 files and the OFL licence
-styles.css        design, all colours as tokens on :root
-pilanda-*.svg     signet and wordmark
-signature/        the logo the mail signatures load by URL
+.github/workflows/sync-web.yml  nightly build from pilanda-systems-web
+.github/workflows/pages.yml     checks links, publishes site/
+scripts/build-site.mjs          adapts the web app for static hosting, builds it
+site/                           the generated site
+site/signature/                 the logo mail signatures load by URL, not generated
+source-commit.txt               the web app commit site/ was built from
+CNAME                           the custom domain
 ```
 
-Serve it locally:
+**What differs from the web app.** `scripts/build-site.mjs` applies this to a
+throwaway checkout, never to the web app itself:
+
+- Only `/`, `/projektplan`, `/impressum`, `/datenschutz` and `/agb` are
+  published. Brand and print material stays out of the bundle.
+- Pi-Chat is removed, because it needs a server.
+- The contact form writes directly to Supabase with the public, insert-only
+  grant, because the server function does not exist here.
+- The privacy notice names GitHub Pages as host and drops the Pi-Chat parts.
+
+Each edit is an exact text match. When the web app changes one of these places
+the nightly run fails and the live site stays as it is, until the script is
+adapted. A failed run is the signal to look at the script, not to retry.
+
+**Keeping it running.** The sync needs the secret `WEB_REPO_TOKEN`: a
+fine-grained token with read access to the contents of `pilanda-systems-web`,
+nothing else. GitHub suspends scheduled workflows after 60 days without
+activity in the repository; re-enable the workflow if that happens.
+
+Run a sync by hand under Actions, or build locally:
 
 ```bash
-python -m http.server 8080
+git clone <pilanda-systems-web> /tmp/web
+(cd /tmp/web && bun install --frozen-lockfile --ignore-scripts)
+node scripts/build-site.mjs /tmp/web site
 ```
 
-`signature/logo.png` is the wordmark the Outlook signatures pull in, 540 x 42
-so it stays sharp at the 270 x 21 they display. Nothing on the site links to
-it. **The path must not move.** It sits in mail that has already been sent,
-and a signature whose logo 404s looks worse than one without a logo.
+Use a throwaway clone: the script changes the checkout it builds.
 
-The holding page carries `noindex`, like the two legal pages: what stood here
-before should not keep turning up in search results while there is nothing to
-send a reader to. Taking that line out is the first step of putting the site
-back.
-
-## Naming
-
-**Never "ERP".** The brand concept settles it in chapter 6: the ERP emerges
-from combining the modules and does not need to be carried as a product of
-its own. Three levels:
-
-| level | name |
-|---|---|
-| company | Pilanda Systems |
-| platform | Pilanda |
-| module | Pilanda Sales, Pilanda Pilot, Pilanda Planning, … |
-| separate product | Kontor |
-
-"ERP" still appears three times on the site and all three talk about other
-people's systems - "Bestellung im ERP", "weil ein ERP dazukommt", "keinen
-Konzern-ERP brauchen". Those stay.
-
-Module names are only set where they are backed: the four the concept names
-itself and the ones the founder gave. The rest carry the functional label
-from the navigation contract (`pilanda/modules_data.py`) and nothing else.
-Invented product names on a sales page would be worse than none.
-
-## What it is
-
-Pilanda is a cloud solution. Hosting, backups and updates are included in the
-price and run in a data centre in the European Union; the customer installs
-nothing. The product page and the FAQ said so while they were up, and they
-have to say it again when they come back - there is no on-premise option, and
-no page may suggest one.
-
-## Design
-
-The basis is the **brand concept for corporate identity and corporate design,
-draft v0.2 of 2026-10-05**. The colours are tokens on `:root` in `styles.css` —
-change them there, not in the pages.
-
-| Token | Value | Role |
-|---|---|---|
-| `--petrol` | `#008B8A` | signet, areas, graphics, large type |
-| `--petrol-deep` | `#006B6A` | body text, links and button labels on Papier |
-| `--petrol-light` | `#009A99` | links and small accents on the dark stage |
-| `--fg` / `--graphit` | `#1E2328` | body text and headlines on Papier |
-| `--stage` | `#141A1F` | the dark stage |
-| `--line-strong` / `--blech` | `#8A9099` | lines, current state, secondary text (Blechgrau) |
-| `--bg` / `--papier` | `#F2EFE8` | the light surface |
-
-## Form
-
-The layout follows inscript.team: a dark stage, display type at 8.4vw with
-tight tracking, full-bleed sections alternating between stage and Papier, one
-accent, an accordion instead of running prose, and a stacked headline above the
-contact. **The colour does not follow it** - that site is black and orange, this
-one carries the brand concept's single accent.
-
-Sections are `.stage`, `.stage-2` or `.paper`; the measure lives on the text
-block, not on the container, so a surface fills the screen while a line stays
-readable.
-
-Contrast on the stage, measured against Graphit `#1E2328`:
-
-| | | |
-|---|---:|---|
-| Papier `#F2EFE8` | 13.79:1 | body text |
-| Blechgrau `#8A9099` | 4.92:1 | secondary text, labels |
-| Petrol light `#009A99` | 4.59:1 | links, small accents |
-| Petrol `#008B8A` | 3.82:1 | areas, signet, display type only |
-
-`--petrol-light` is the second documented deviation from the concept, after
-`--petrol-deep`: the concept's petrol reaches only 3.82:1 on Graphit and cannot
-carry a link. It is the same hue lifted 3% in lightness.
-
-**One brand colour, no second accent.** Grey carries the current state and the
-break, petrol the fix and the closed gap.
-
-Splitting `--petrol` from `--petrol-deep` is not a matter of taste: the logo
-petrol reaches 3.6:1 on paper and therefore carries only areas, graphics and
-large type. Body text and small labels use the deep petrol (5.5:1 on paper,
-white on it 6.3:1).
-
-The signet and the wordmark are copies from `pilanda_theme/public/logo/`.
-**That is the source** — a logo change belongs there, not here.
-
-Typeface: IBM Plex Sans and IBM Plex Mono (SIL Open Font License), **served
-from this server**, Arial as the fallback. Loading them from Google would hand
-every visitor's IP address to a company in the United States - on a site with
-no cookies, no scripts, no forms and no analytics that was the only thing left
-that would have to be declared, and the only one that is avoidable. Latin
-subset only: the site is German, and the umlauts are in latin. That governs marketing; the interfaces of the Pilanda software
-run on Noto Sans (decision 2026-10-05).
-
-The site ignores the operating system's dark-mode setting: the stage and the
-Papier surfaces are part of the design, not a theme, and a sales presence should
-look the same on every machine.
-
-## Accessibility
-
-Reviewed against the UCT standard criteria (`schwarz-informatik/usability`).
-What the review changed:
-
-- The process line in the header exposes its stations as an ordered list;
-  only the dots and bars are `aria-hidden`.
-- Every page starts with a skip link to the content, visible on focus.
-- The current page carries `aria-current="page"` and a visible marker.
-- English terms inside the German prose carry `lang="en"`.
-- The questions are a `<details>` accordion, so they are reachable by keyboard
-  and open in print. The imprint and the privacy notice keep a plain definition
-  list: a mandatory disclosure does not go behind a click.
-
-## Publishing
-
-`.github/workflows/pages.yml` publishes every state of `main` to GitHub Pages.
-Before that, the run checks that every link points at a file that exists — a
-dead link to the signet would otherwise only surface at the customer.
-
-The site runs at **https://pilanda.systems**.
-
-### Custom domain
-
-`pilanda.systems` resolves to the four GitHub Pages addresses
-(`185.199.108-111.153`) and is configured in the Pages service. The `CNAME`
-file at the repository root holds the domain so a deployment cannot drop it —
-GitHub writes that file itself when the domain is set in the UI.
-
-Two things worth knowing if this ever has to be undone:
-
-- An empty string does not clear the domain over the API; it takes
-  `{"cname": null}`.
-- While a custom domain is configured, GitHub serves the site **there only**.
-  `pilanda-systems.github.io/homepage/` answers with a 301 to the domain, so
-  if DNS does not point at GitHub, the site is unreachable even though every
-  deployment succeeded.
-
-## Still open
-
-- **Why the site is down is not written anywhere here**, and it should be
-  before someone reads the history and guesses. What comes back, and in what
-  form, is open.
-- Contact: `info@pilanda.systems` is in place and clickable. Phone number and
-  postal address are still placeholders, and § 5 ECG wants both.
-- **Imprint and privacy notice exist but are incomplete.** The company is not
-  founded yet, so the operator is a natural person for now and every field in
-  square brackets has to be filled in. An incomplete imprint is an
-  administrative offence under § 26 ECG in Austria. Both pages carry
-  `noindex` and say so at the top; they are a template with the right
-  structure, not legal advice.
-- **No prices on the site.** Tiers and figures were taken off again. They
-  live in the offer sheet handed over in person and calculated on the
-  customer's own seat count, not on a page anyone can read without
-  context. Anything with AI stays an add-on there, never part of a tier.
-- The brand concept's core question (consultancy with tools, or software house
-  with consultancy) is undecided. Whether the plant-engineering page stays as it is
-  hangs on it — the concept considers that in need of explanation.
+The former holding page and the older static pages are in the history, last at
+`b920554`.
