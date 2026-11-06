@@ -78,7 +78,10 @@ app.MapPost("/inquiry", async (
     using var response = await clients.CreateClient("graph").SendAsync(request, cancelled);
     if (!response.IsSuccessStatusCode)
     {
-        logger.LogError("Mail for inquiry {Reference} failed with {Status}", inquiry.Reference, (int)response.StatusCode);
+        // Graph answers with the reason, never with the content of the mail.
+        var reason = await response.Content.ReadAsStringAsync(cancelled);
+        logger.LogError("Mail for inquiry {Reference} failed with {Status}: {Reason}",
+            inquiry.Reference, (int)response.StatusCode, reason[..Math.Min(reason.Length, 300)]);
         return Results.StatusCode(StatusCodes.Status502BadGateway);
     }
 
