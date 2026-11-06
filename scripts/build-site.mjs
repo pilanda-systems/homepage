@@ -34,10 +34,10 @@ const PAGES = {
 // What stays. These are allow lists on purpose: the web app keeps gaining
 // internal pages, and a new one must stay out without anyone listing it here.
 const KEPT_ROUTES = ["__root.tsx", "index.tsx", "projektplan.tsx", "impressum.tsx", "datenschutz.tsx", "agb.tsx"];
-const KEPT_PUBLIC = ["favicon.svg", "robots.txt"];
+const KEPT_PUBLIC = ["favicon.svg", "robots.txt", "wartung.html"];
 
 // Must not reach the public output, whatever happens upstream.
-const FORBIDDEN_FILE = /visitenkarte|briefpapier|corporate-design|praesentation|bot-wissen|stempel|google-unternehmensprofil/i;
+const FORBIDDEN_FILE = /visitenkarte|briefpapier|corporate-design|praesentation|bot-wissen|faq-wissen|stempel|google-unternehmensprofil/i;
 // Visitor data stays with Microsoft: nothing of these vendors may ship, not even
 // dead code. This also catches their keys.
 const FORBIDDEN_TEXT = /lovable|gptengineer|gpt-eng|supabase|sb_secret_/i;
@@ -86,11 +86,14 @@ function adaptForStaticHosting() {
   keepOnly("src/routes", KEPT_ROUTES);
   keepOnly("public", KEPT_PUBLIC);
 
-  // Pi-Chat needs a server, so it does not ship at all.
-  writeFileSync(
-    inWeb("src/components/pi-bot.tsx"),
-    "export function PiBot(_props: Record<string, unknown>) {\n  return null;\n}\n",
-  );
+  // Square brackets mark answers the team has not confirmed yet. The Pi-FAQ is
+  // public, so those stay out until they are filled in upstream.
+  const faq = read("src/lib/faq.ts")
+    .split("\n")
+    .filter((line) => !(/^\s*\{ id: "/.test(line) && line.includes("[")))
+    .join("\n");
+  if (/"[^"\n]*\[[^"\n]*"/.test(faq)) throw new Error("src/lib/faq.ts: open placeholder left, adapt this script");
+  writeFileSync(inWeb("src/lib/faq.ts"), faq);
 
   // No visitor data goes to Lovable or its Supabase database. Removing the
   // integration outright makes any remaining import fail the build, and without
@@ -123,27 +126,19 @@ function adaptForStaticHosting() {
   // Wording taken from the privacy notice this repository already published.
   edit("src/lib/pilanda-legal.ts", [
     [
-      "Gespeichert werden sie in unserer Datenbank auf Microsoft Azure (Microsoft Ireland Operations Limited) als Auftragsverarbeiter.",
-      "Die Angaben werden über Microsoft Azure per E-Mail an unser Postfach bei Microsoft 365 übermittelt und dort gespeichert. Anbieter ist die Microsoft Ireland Operations Limited als Auftragsverarbeiter.",
+      "Formularangaben werden direkt per E-Mail an das Pilanda Office weitergeleitet",
+      "Formularangaben werden über Microsoft Azure per E-Mail an das Pilanda Office weitergeleitet",
     ],
     [
-      "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am sicheren Betrieb).",
-      "Die Seite wird über GitHub Pages ausgeliefert, betrieben von GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA, einem Unternehmen der Microsoft Corporation. Beim Aufruf der Website verarbeitet GitHub technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am sicheren Betrieb). Es findet eine Übermittlung in die Vereinigten Staaten statt. Sie stützt sich auf die Standardvertragsklauseln der Europäischen Kommission sowie auf die Zertifizierung unter dem EU-US Data Privacy Framework.",
-    ],
-    [
-      " Der Pi·Chat-Verlauf wird nur auf ausdrücklichen Wunsch über die Auswahl 'Gespräch auf diesem Gerät behalten' lokal im Browser gespeichert. Die Auswahl kann jederzeit deaktiviert werden; 'Neues Gespräch' löscht den bisherigen lokalen Verlauf. Ohne diese Auswahl bleibt der Verlauf nur bis zum Neuladen erhalten.",
-      "",
+      "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Sie werden nach spätestens 30 Tagen gelöscht.",
+      "Die Seite wird über GitHub Pages ausgeliefert, betrieben von GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA, einem Unternehmen der Microsoft Corporation. Beim Aufruf der Website verarbeitet GitHub technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Es findet eine Übermittlung in die Vereinigten Staaten statt. Sie stützt sich auf die Standardvertragsklauseln der Europäischen Kommission sowie auf die Zertifizierung unter dem EU-US Data Privacy Framework.",
     ],
   ]);
-  const legal = read("src/lib/pilanda-legal.ts");
-  const chat = legal.match(/ *\{\n *heading: "Pi·Chat und KI-Verarbeitung",\n *body: ".*",\n *\},\n/);
-  if (!chat) throw new Error("src/lib/pilanda-legal.ts: Pi-Chat section is gone, adapt this script");
-  writeFileSync(inWeb("src/lib/pilanda-legal.ts"), legal.replace(chat[0], ""));
   // Published as final by decision of Dominik Boeckle, 06.11.2026: no draft
   // wording on any legal page, and the imprint carries a phone number.
   edit("src/routes/datenschutz.tsx", [
-    ["Website, Projektanfragen, E-Mail und Pi·Chat. Rechtsentwurf mit offenen Angaben.", "Website, Projektanfragen und E-Mail."],
-    ["zu Website, Kontakt und Pi·Chat. Rechtsentwurf mit offenen Angaben.", "zu Website und Kontakt."],
+    ["Website, Projektanfragen, E-Mail und Pi-FAQ. Rechtsentwurf mit offenen Angaben.", "Website, Projektanfragen, E-Mail und Pi-FAQ."],
+    ["zu Website, Kontakt und Pi-FAQ. Rechtsentwurf mit offenen Angaben.", "zu Website, Kontakt und Pi-FAQ."],
   ]);
   edit("src/routes/agb.tsx", [
     ["Entwurf der Allgemeinen Geschäftsbedingungen von", "Allgemeine Geschäftsbedingungen von"],

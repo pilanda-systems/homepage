@@ -29,13 +29,15 @@ throwaway checkout, never to the web app itself:
 
 - Only `/`, `/projektplan`, `/impressum`, `/datenschutz` and `/agb` are
   published. Brand and print material stays out of the bundle.
-- Pi-Chat is removed, because it needs a server.
+- `wartung.html` is published as the page to switch to during maintenance.
+- The Pi-FAQ ships without the answers that still hold a `[placeholder]`. They
+  appear by themselves once they are filled in in the web app.
 - The contact form posts to `contact-mail/` on Azure, which mails
   info@pilanda.systems. That mail is the only copy of an inquiry.
 - Nothing of Lovable or Supabase ships. The build stops if either shows up in
   the output.
-- The privacy notice names GitHub Pages as host and Microsoft for inquiries,
-  and drops the Pi-Chat parts.
+- The privacy notice names GitHub Pages as host and Microsoft Azure on the way
+  of an inquiry.
 
 Each edit is an exact text match. When the web app changes one of these places
 the nightly run fails and the live site stays as it is, until the script is
