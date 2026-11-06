@@ -1,0 +1,89 @@
+name: Deploy
+
+# Publishes site/ as it stands on `main` to the container app `homepage` on
+# Azure. The files there come from the nightly sync (sync-web.yml); this run
+# only checks them, builds the image and rolls it out.
+#
+# It signs in with a federated identity, so no secret is stored. The IDs are
+# repository variables: they are not secret.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - site/**
+      - hosting/**
+      - .dockerignore
+      - .github/workflows/deploy.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+# One deployment at a time. A running one is not cancelled, so a half
+# published site never stays up.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  IMAGE: pilandahomepage.azurecr.io/homepage:${{ github.sha }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check links
+        # A dead link to a subpage or to an asset only shows up in the
+        # customer's browser. Here it shows up first. Links are root-relative
+        # and pages have no extension, as hosting/nginx.conf resolves them.
+        working-directory: site
+        run: |
+          missing=0
+          for file in *.html; do
+            while read -r target; do
+              case "$target" in
+                http*|mailto:*|tel:*|data:*|\#*|"") continue ;;
+              esac
+              target="${target%%#*}"
+              target="${target%%\?*}"
+              target="${target#/}"
+              [ -z "$target" ] && continue
+              if [ ! -f "$target" ] && [ ! -f "$target.html" ]; then
+                echo "::error file=$file::links to $target - which does not exist"
+                missing=1
+              fi
+            done < <(grep -aoE '(href|src)="[^"]+"' "$file" | cut -d'"' -f2)
+          done
+          exit $missing
+
+      - name: Build
+        run: docker build -f hosting/Dockerfile -t "$IMAGE" .
+
+      - name: Scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ env.IMAGE }}
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Roll out
+        run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+          az acr login -n pilandahomepage
+          docker push "$IMAGE"
+          az containerapp update -n homepage -g rg-pilanda-homepage --image "$IMAGE"
+
+      - name: Check the live site
+        run: curl -fsS -o /dev/null --retry 12 --retry-delay 5 --retry-all-errors https://pilanda.systems/

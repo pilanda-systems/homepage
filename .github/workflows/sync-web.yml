@@ -85,4 +85,4 @@ jobs:
           git commit -m "chore: update site from web ${COMMIT::7}"
           git push
           # A push made with the workflow token starts no other workflow.
-          gh workflow run pages.yml --ref main
+          gh workflow run deploy.yml --ref main
