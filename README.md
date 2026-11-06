@@ -14,14 +14,14 @@ Nothing happens when the web app has not changed.
 
 ```
 .github/workflows/sync-web.yml  nightly build from pilanda-systems-web
-.github/workflows/pages.yml     checks links, publishes site/
+.github/workflows/deploy.yml    checks links, scans the image, rolls out to Azure
 .github/workflows/contact-mail.yml  builds and scans the mail service
+hosting/                        Nginx image that serves site/
 contact-mail/                   mails inquiries, runs on Azure Container Apps
 scripts/build-site.mjs          adapts the web app for static hosting, builds it
 site/                           the generated site
 site/signature/                 the logo mail signatures load by URL, not generated
 source-commit.txt               the web app commit site/ was built from
-CNAME                           the custom domain
 ```
 
 **What differs from the web app.** `scripts/build-site.mjs` applies this to a
@@ -36,12 +36,19 @@ throwaway checkout, never to the web app itself:
   info@pilanda.systems. That mail is the only copy of an inquiry.
 - Nothing of Lovable or Supabase ships. The build stops if either shows up in
   the output.
-- The privacy notice names GitHub Pages as host and Microsoft Azure on the way
-  of an inquiry.
+- The privacy notice names Microsoft Azure as host and on the way of an inquiry,
+  and says that no access logs are kept.
 
 Each edit is an exact text match. When the web app changes one of these places
 the nightly run fails and the live site stays as it is, until the script is
 adapted. A failed run is the signal to look at the script, not to retry.
+
+**Hosting.** The site runs as the container app `homepage` on Azure Container
+Apps in Germany West Central, next to the mail service. One replica always runs,
+so visitors never wait for a cold start. Nginx keeps no access log and the
+environment has no log destination, which the privacy notice relies on.
+`deploy.yml` signs in with the federated identity `id-homepage-deploy`. It may
+push to the registry and update this one app, nothing else.
 
 **Keeping it running.** The sync needs the secret `WEB_REPO_TOKEN`: a
 fine-grained token with read access to the contents of `pilanda-systems-web`,

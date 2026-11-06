@@ -1,1 +1,0 @@
-import{i as e}from"./index-dExLdpsE.js";import{t}from"./legal-page-D3viu4JC.js";var n=e();function r(){return(0,n.jsx)(t,{document:`Datenschutz`})}export{r as component};

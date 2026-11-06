@@ -3,7 +3,7 @@
 //
 //   node scripts/build-site.mjs <web-checkout> <output-dir>
 //
-// The web app is a server-rendered app; GitHub Pages only serves files. This
+// The web app is a server-rendered app; the hosting only serves files. This
 // script adapts the checkout for that, builds it, renders every public page
 // once and writes the result to <output-dir>.
 //
@@ -121,9 +121,8 @@ function adaptForStaticHosting() {
     ["Keine automatische\n              E-Mail.", "Keine automatische\n              Bestätigungs-E-Mail."],
   ]);
 
-  // The privacy notice has to name the real providers of this site: GitHub
-  // Pages hosts it, Microsoft carries and keeps the inquiries.
-  // Wording taken from the privacy notice this repository already published.
+  // The privacy notice has to describe this site as it runs: hosting/nginx.conf
+  // keeps no access log, and the Azure environment has no log destination.
   edit("src/lib/pilanda-legal.ts", [
     [
       "Formularangaben werden direkt per E-Mail an das Pilanda Office weitergeleitet",
@@ -131,7 +130,7 @@ function adaptForStaticHosting() {
     ],
     [
       "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Sie werden nach spätestens 30 Tagen gelöscht.",
-      "Die Seite wird über GitHub Pages ausgeliefert, betrieben von GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA, einem Unternehmen der Microsoft Corporation. Beim Aufruf der Website verarbeitet GitHub technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Es findet eine Übermittlung in die Vereinigten Staaten statt. Sie stützt sich auf die Standardvertragsklauseln der Europäischen Kommission sowie auf die Zertifizierung unter dem EU-US Data Privacy Framework.",
+      "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited, Rechenzentrum in Deutschland) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Wir führen keine eigenen Zugriffsprotokolle.",
     ],
   ]);
   // Published as final by decision of Dominik Boeckle, 06.11.2026: no draft
