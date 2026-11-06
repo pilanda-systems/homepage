@@ -1,0 +1,32 @@
+name: Contact mail
+
+# Builds the service that mails inquiries and scans the image. The image that
+# runs is built in Azure from the same Dockerfile, see the README.
+
+on:
+  push:
+    paths:
+      - contact-mail/**
+      - .github/workflows/contact-mail.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: docker build -t contact-mail:scan contact-mail
+
+      - name: Scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: contact-mail:scan
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
