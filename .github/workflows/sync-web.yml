@@ -57,7 +57,7 @@ jobs:
         with:
           bun-version: 1.3.10
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.state.outputs.changed == 'true'
         with:
           node-version: 24
