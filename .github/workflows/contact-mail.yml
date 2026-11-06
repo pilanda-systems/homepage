@@ -1,7 +1,7 @@
 name: Contact mail
 
-# Builds the service that forwards inquiries to the company mailbox. The image
-# only reaches ghcr.io after the scan passes.
+# Builds the service that mails inquiries and scans the image. The image that
+# runs is built in Azure from the same Dockerfile, see the README.
 
 on:
   push:
@@ -12,33 +12,21 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
-  image:
+  scan:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      IMAGE: ghcr.io/pilanda-systems/homepage/contact-mail:${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Build
-        run: docker build -t "$IMAGE" contact-mail
+        run: docker build -t contact-mail:scan contact-mail
 
       - name: Scan
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
-          image-ref: ${{ env.IMAGE }}
+          image-ref: contact-mail:scan
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           exit-code: "1"
-
-      - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-
-      - name: Push
-        run: docker push "$IMAGE"
