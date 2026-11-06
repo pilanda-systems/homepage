@@ -55,6 +55,9 @@ function edit(file, replacements) {
   writeFileSync(inWeb(file), text);
 }
 
+// contact-mail/ in this repository, running on Azure Container Apps.
+const CONTACT_MAIL_URL = "https://contact-mail.salmonfield-383fadcf.germanywestcentral.azurecontainerapps.io/inquiry";
+
 const DIRECT_SUBMIT = `import { createClient } from "@supabase/supabase-js";
 import type { Inquiry } from "./inquiry";
 import { persistInquiry } from "./inquiry-persistence";
@@ -74,12 +77,21 @@ export async function submitInquiryDirect({ data }: { data: Inquiry }) {
       },
     },
   });
-  return persistInquiry(
+  const result = await persistInquiry(
     data,
     crypto.randomUUID(),
     (row) => client.from("contact_inquiries").insert(row),
     (details) => console.error("Inquiry persistence failed", details),
   );
+  // The inquiry is stored at this point, so a failed mail must not read as a
+  // failed inquiry to the visitor.
+  void fetch("${CONTACT_MAIL_URL}", {
+    method: "POST",
+    keepalive: true,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...data, reference: result.reference }),
+  }).catch(() => undefined);
+  return result;
 }
 `;
 
@@ -111,15 +123,16 @@ function adaptForStaticHosting() {
     ["const submit = useServerFn(submitInquiry);", "const submit = submitInquiryDirect;"],
   ]);
 
-  // The privacy notice has to describe this hosting, not the Lovable one.
+  // The privacy notice has to name the real providers of this site: GitHub
+  // Pages hosts it, Lovable holds the database, Microsoft carries the mail.
   // Wording taken from the privacy notice this repository already published.
   edit("src/lib/pilanda-legal.ts", [
     [
-      "Gespeichert werden sie bei unserem Hosting- und Datenbankanbieter Lovable (Lovable Labs Incorporated) als Auftragsverarbeiter.",
-      "Gespeichert werden sie bei unserem Datenbankanbieter Lovable (Lovable Labs Incorporated) als Auftragsverarbeiter.",
+      "Gespeichert werden sie in unserer Datenbank auf Microsoft Azure (Microsoft Ireland Operations Limited) als Auftragsverarbeiter.",
+      "Gespeichert werden sie bei unserem Datenbankanbieter Lovable (Lovable Labs Incorporated) als Auftragsverarbeiter. Zur Bearbeitung werden die Angaben außerdem per E-Mail an unser Postfach weitergeleitet. Dafür nutzen wir Microsoft Azure und Microsoft 365 der Microsoft Ireland Operations Limited als Auftragsverarbeiter.",
     ],
     [
-      "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Lovable (Lovable Labs Incorporated) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am sicheren Betrieb).",
+      "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am sicheren Betrieb).",
       "Die Seite wird über GitHub Pages ausgeliefert, betrieben von GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA, einem Unternehmen der Microsoft Corporation. Beim Aufruf der Website verarbeitet GitHub technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am sicheren Betrieb). Es findet eine Übermittlung in die Vereinigten Staaten statt. Sie stützt sich auf die Standardvertragsklauseln der Europäischen Kommission sowie auf die Zertifizierung unter dem EU-US Data Privacy Framework.",
     ],
     [
