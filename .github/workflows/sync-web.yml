@@ -1,0 +1,88 @@
+name: Sync from web
+
+# Every night the public pages of pilanda-systems-web are rebuilt as static
+# files and committed to site/. A failed run changes nothing: the live site
+# stays on its last good state and GitHub reports the failed run.
+#
+# WEB_REPO_TOKEN is a fine-grained token with read access to the contents of
+# pilanda-systems-web and nothing else. This workflow has no pull request
+# trigger, so forks of this public repository never get to the token.
+
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Rebuild even if the web app has not changed
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: sync-web
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the web app
+        uses: actions/checkout@v4
+        with:
+          repository: pilanda-systems/pilanda-systems-web
+          token: ${{ secrets.WEB_REPO_TOKEN }}
+          path: .web
+          persist-credentials: false
+
+      - name: Compare with the published state
+        id: state
+        env:
+          FORCE: ${{ inputs.force }}
+        run: |
+          commit="$(git -C .web rev-parse HEAD)"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          if [ "$FORCE" = "true" ] || [ "$commit" != "$(cat source-commit.txt 2>/dev/null)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: oven-sh/setup-bun@v2
+        if: steps.state.outputs.changed == 'true'
+        with:
+          bun-version: 1.3.10
+
+      - uses: actions/setup-node@v4
+        if: steps.state.outputs.changed == 'true'
+        with:
+          node-version: 24
+
+      - name: Install
+        if: steps.state.outputs.changed == 'true'
+        working-directory: .web
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build the site
+        if: steps.state.outputs.changed == 'true'
+        run: node scripts/build-site.mjs .web site
+
+      - name: Commit and publish
+        if: steps.state.outputs.changed == 'true'
+        env:
+          COMMIT: ${{ steps.state.outputs.commit }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "$COMMIT" > source-commit.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site source-commit.txt
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: update site from web ${COMMIT::7}"
+          git push
+          # A push made with the workflow token starts no other workflow.
+          gh workflow run pages.yml --ref main

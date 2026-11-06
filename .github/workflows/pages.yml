@@ -1,8 +1,7 @@
 name: Pages
 
-# The site is static HTML with no build step. The run uploads the state of
-# `main` as an artifact and publishes it - no npm, no generator, nothing that
-# could come between the source and the result.
+# Publishes site/ as it stands on `main`. The files there come from the
+# nightly sync (sync-web.yml); this run only checks and uploads them.
 
 on:
   push:
@@ -30,28 +29,32 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Check links
-        # A dead link to a subpage or to the signet only shows up in the
-        # customer's browser. Here it shows up first.
+        # A dead link to a subpage or to an asset only shows up in the
+        # customer's browser. Here it shows up first. Links are root-relative
+        # and pages have no extension, as GitHub Pages resolves them.
+        working-directory: site
         run: |
           missing=0
           for file in *.html; do
             while read -r target; do
               case "$target" in
-                http*|mailto:*|tel:*|\#*|"") continue ;;
+                http*|mailto:*|tel:*|data:*|\#*|"") continue ;;
               esac
               target="${target%%#*}"
+              target="${target%%\?*}"
+              target="${target#/}"
               [ -z "$target" ] && continue
-              if [ ! -f "$target" ]; then
+              if [ ! -f "$target" ] && [ ! -f "$target.html" ]; then
                 echo "::error file=$file::links to $target - which does not exist"
                 missing=1
               fi
-            done < <(grep -oE '(href|src)="[^"]+"' "$file" | cut -d'"' -f2)
+            done < <(grep -aoE '(href|src)="[^"]+"' "$file" | cut -d'"' -f2)
           done
           exit $missing
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: site
       - id: deployment
         uses: actions/deploy-pages@v4
