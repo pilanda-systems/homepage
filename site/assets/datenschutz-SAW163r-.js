@@ -1,0 +1,1 @@
+import{u as e}from"./index-CG4pxkJf.js";import{t}from"./legal-page-DnAc903g.js";var n=e();function r(){return(0,n.jsx)(t,{document:`Datenschutz`})}export{r as component};
