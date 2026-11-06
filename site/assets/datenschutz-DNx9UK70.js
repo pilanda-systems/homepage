@@ -1,0 +1,1 @@
+import{o as e}from"./index-BrCuXVGv.js";import{t}from"./legal-page-oFhE5IWK.js";var n=e();function r(){return(0,n.jsx)(t,{document:`Datenschutz`})}export{r as component};

@@ -1,7 +1,7 @@
 // Forwards an inquiry from the website to the company mailbox.
 //
-// The site is static, so visitors post here after their inquiry is stored.
-// The endpoint is public on purpose: visitors have no accounts, which is why
+// The site is static, so the form posts here, and the mail is the only copy of
+// an inquiry. The endpoint is public on purpose: visitors have no accounts, which is why
 // it carries no [Authorize]. The recipient is fixed, so it cannot be used to
 // mail anyone else, and limits below keep a flood from filling the mailbox.
 //

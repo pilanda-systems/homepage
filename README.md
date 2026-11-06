@@ -15,6 +15,8 @@ Nothing happens when the web app has not changed.
 ```
 .github/workflows/sync-web.yml  nightly build from pilanda-systems-web
 .github/workflows/pages.yml     checks links, publishes site/
+.github/workflows/contact-mail.yml  builds and scans the mail service image
+contact-mail/                   mails inquiries, runs on Azure Container Apps
 scripts/build-site.mjs          adapts the web app for static hosting, builds it
 site/                           the generated site
 site/signature/                 the logo mail signatures load by URL, not generated
@@ -28,9 +30,12 @@ throwaway checkout, never to the web app itself:
 - Only `/`, `/projektplan`, `/impressum`, `/datenschutz` and `/agb` are
   published. Brand and print material stays out of the bundle.
 - Pi-Chat is removed, because it needs a server.
-- The contact form writes directly to Supabase with the public, insert-only
-  grant, because the server function does not exist here.
-- The privacy notice names GitHub Pages as host and drops the Pi-Chat parts.
+- The contact form posts to `contact-mail/` on Azure, which mails
+  info@pilanda.systems. That mail is the only copy of an inquiry.
+- Nothing of Lovable or Supabase ships. The build stops if either shows up in
+  the output.
+- The privacy notice names GitHub Pages as host and Microsoft for inquiries,
+  and drops the Pi-Chat parts.
 
 Each edit is an exact text match. When the web app changes one of these places
 the nightly run fails and the live site stays as it is, until the script is
