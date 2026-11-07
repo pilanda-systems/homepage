@@ -25,7 +25,7 @@ const inWeb = (...parts) => join(web, ...parts);
 // Public pages. Everything else in the web app stays out of the bundle.
 const PAGES = {
   "/": "index.html",
-  "/projektplan": "projektplan.html",
+  "/anfrage": "anfrage.html",
   "/impressum": "impressum.html",
   "/datenschutz": "datenschutz.html",
   "/agb": "agb.html",
@@ -33,7 +33,8 @@ const PAGES = {
 
 // What stays. These are allow lists on purpose: the web app keeps gaining
 // internal pages, and a new one must stay out without anyone listing it here.
-const KEPT_ROUTES = ["__root.tsx", "index.tsx", "projektplan.tsx", "impressum.tsx", "datenschutz.tsx", "agb.tsx"];
+// danke.tsx has no file of its own: the page only exists right after sending.
+const KEPT_ROUTES = ["__root.tsx", "index.tsx", "anfrage.tsx", "danke.tsx", "impressum.tsx", "datenschutz.tsx", "agb.tsx"];
 const KEPT_PUBLIC = ["favicon.svg", "robots.txt", "wartung.html"];
 
 // Must not reach the public output, whatever happens upstream.
@@ -69,7 +70,7 @@ export async function submitInquiryDirect({ data }: { data: Inquiry }) {
     body: JSON.stringify({ ...data, reference }),
   });
   if (!response.ok) throw new Error("Inquiry not delivered");
-  return { reference };
+  return { sent: true, copySent: false };
 }
 `;
 
@@ -117,42 +118,29 @@ function adaptForStaticHosting() {
     ['import { submitInquiry } from "@/lib/contact.functions";', 'import { submitInquiryDirect } from "@/lib/contact.static";'],
     ["const submit = useServerFn(submitInquiry);", "const submit = submitInquiryDirect;"],
   ]);
-  edit("src/components/projektplan/phase-plan.tsx", [
-    ["Keine automatische\n              E-Mail.", "Keine automatische\n              Bestätigungs-E-Mail."],
+  // The mail service is public, so a copy to an address typed into the form would
+  // let anyone send text of their choice from the company mailbox.
+  edit("src/components/anfrage/phase-plan.tsx", [
+    [
+      `            <label className="inquiry-copy" htmlFor="plan-send-copy">
+              <Checkbox id="plan-send-copy" name="sendCopy" value="on" defaultChecked={false} disabled={pending} />
+              <span>E-Mail-Kopie an mich senden</span>
+            </label>
+`,
+      "",
+    ],
   ]);
 
   // The privacy notice has to describe this site as it runs: hosting/nginx.conf
   // keeps no access log, and the Azure environment has no log destination.
   edit("src/lib/pilanda-legal.ts", [
     [
-      "Formularangaben werden direkt per E-Mail an das Pilanda Office weitergeleitet",
-      "Formularangaben werden über Microsoft Azure per E-Mail an das Pilanda Office weitergeleitet",
+      "Formularangaben werden direkt per E-Mail an das Pilanda Team weitergeleitet",
+      "Formularangaben werden über Microsoft Azure per E-Mail an das Pilanda Team weitergeleitet",
     ],
     [
       "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Sie werden nach spätestens 30 Tagen gelöscht.",
       "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited, Rechenzentrum in Deutschland) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Wir führen keine eigenen Zugriffsprotokolle.",
-    ],
-  ]);
-  // Published as final by decision of Dominik Boeckle, 06.11.2026: no draft
-  // wording on any legal page, and the imprint carries a phone number.
-  edit("src/routes/datenschutz.tsx", [
-    ["Website, Projektanfragen, E-Mail und Pi-FAQ. Rechtsentwurf mit offenen Angaben.", "Website, Projektanfragen, E-Mail und Pi-FAQ."],
-    ["zu Website, Kontakt und Pi-FAQ. Rechtsentwurf mit offenen Angaben.", "zu Website, Kontakt und Pi-FAQ."],
-  ]);
-  edit("src/routes/agb.tsx", [
-    ["Entwurf der Allgemeinen Geschäftsbedingungen von", "Allgemeine Geschäftsbedingungen von"],
-    ["AGB-Entwurf für die Leistungen", "AGB für die Leistungen"],
-  ]);
-  edit("src/lib/pilanda-legal.ts", [
-    ["body: `E-Mail · ${companyContact.email}`,", "body: `E-Mail · ${companyContact.email}\\nTelefon · 0670 401 30 33`,"],
-  ]);
-  edit("src/components/home/legal-page.tsx", [
-    [
-      `        <p className="mt-6 border-l-2 border-primary pl-4 text-sm leading-relaxed text-muted-foreground">
-          Entwurf. Fehlende Firmendaten und offene rechtliche Angaben sind vor Veröffentlichung zu ergänzen und zu prüfen.
-        </p>
-`,
-      "",
     ],
   ]);
 }
