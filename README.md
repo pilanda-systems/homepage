@@ -27,11 +27,13 @@ source-commit.txt               the web app commit site/ was built from
 **What differs from the web app.** `scripts/build-site.mjs` applies this to a
 throwaway checkout, never to the web app itself:
 
-- Only `/`, `/projektplan`, `/impressum`, `/datenschutz` and `/agb` are
+- Only `/`, `/anfrage`, `/danke`, `/impressum`, `/datenschutz` and `/agb` are
   published. Brand and print material stays out of the bundle.
 - `wartung.html` is published as the page to switch to during maintenance.
 - The Pi-FAQ ships without the answers that still hold a `[placeholder]`. They
   appear by themselves once they are filled in in the web app.
+- The form has no option to mail a copy to the visitor. The service is public,
+  so anyone could use that to send text from the company mailbox.
 - The contact form posts to `contact-mail/` on Azure, which mails
   info@pilanda.systems. That mail is the only copy of an inquiry.
 - Nothing of Lovable or Supabase ships. The build stops if either shows up in
