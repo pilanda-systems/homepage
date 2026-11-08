@@ -1,1 +1,0 @@
-import{o as e}from"./index-IYyypApS.js";import{t}from"./legal-page-C2De5Tpi.js";var n=e();function r(){return(0,n.jsx)(t,{document:`Impressum`})}export{r as component};
