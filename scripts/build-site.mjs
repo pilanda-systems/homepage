@@ -34,16 +34,17 @@ const PAGES = {
 // What stays. These are allow lists on purpose: the web app keeps gaining
 // internal pages, and a new one must stay out without anyone listing it here.
 // danke.tsx has no file of its own: the page only exists right after sending.
-const KEPT_ROUTES = ["__root.tsx", "index.tsx", "anfrage.tsx", "danke.tsx", "impressum.tsx", "datenschutz.tsx", "agb.tsx"];
-const KEPT_PUBLIC = ["favicon.svg", "robots.txt", "wartung.html"];
+const KEPT_ROUTES = ["__root.tsx", "index.tsx", "anfrage.tsx", "danke.tsx", "impressum.tsx", "datenschutz.tsx", "agb.tsx", "sitemap[.]xml.ts"];
+const KEPT_PUBLIC = ["favicon.svg", "favicon.ico", "favicon.png", "apple-touch-icon.png", "robots.txt", "wartung.html"];
 
 // Must not reach the public output, whatever happens upstream.
 const FORBIDDEN_FILE = /visitenkarte|briefpapier|corporate-design|praesentation|bot-wissen|faq-wissen|stempel|google-unternehmensprofil/i;
 // Visitor data stays with Microsoft: nothing of these vendors may ship, not even
 // dead code. This also catches their keys.
 const FORBIDDEN_TEXT = /lovable|gptengineer|gpt-eng|supabase|sb_secret_/i;
-// The chat does not ship, so no page may promise it or describe its processing.
-const FORBIDDEN_PAGE_TEXT = /Pi[·-]Chat/;
+// The site has no chat, so the legal pages must not describe its processing.
+// Elsewhere Pi-Chat is the name of a product and may appear.
+const FORBIDDEN_LEGAL_TEXT = /Pi[·-]Chat/;
 const LEGAL_PAGES = ["impressum.html", "datenschutz.html", "agb.html"];
 
 const read = (file) => readFileSync(inWeb(file), "utf8").replace(/\r\n/g, "\n");
@@ -88,13 +89,9 @@ function adaptForStaticHosting() {
   keepOnly("public", KEPT_PUBLIC);
 
   // Square brackets mark answers the team has not confirmed yet. The Pi-FAQ is
-  // public, so those stay out until they are filled in upstream.
-  const faq = read("src/lib/faq.ts")
-    .split("\n")
-    .filter((line) => !(/^\s*\{ id: "/.test(line) && line.includes("[")))
-    .join("\n");
-  if (/"[^"\n]*\[[^"\n]*"/.test(faq)) throw new Error("src/lib/faq.ts: open placeholder left, adapt this script");
-  writeFileSync(inWeb("src/lib/faq.ts"), faq);
+  // public, so a bracket in any answer stops the run until it is filled in upstream.
+  if (/"[^"\n]*\[[^"\n]*"/.test(read("src/lib/faq.ts")))
+    throw new Error("src/lib/faq.ts: open placeholder in the FAQ, fill it in upstream");
 
   // No visitor data goes to Lovable or its Supabase database. Removing the
   // integration outright makes any remaining import fail the build, and without
@@ -139,7 +136,7 @@ function adaptForStaticHosting() {
       "Formularangaben werden über Microsoft Azure per E-Mail an das Pilanda Team weitergeleitet",
     ],
     [
-      "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Sie werden nach spätestens 30 Tagen gelöscht.",
+      "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Sie werden nach spätestens 60 Tagen gelöscht.",
       "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited, Rechenzentrum in Deutschland) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Wir führen keine eigenen Zugriffsprotokolle.",
     ],
   ]);
@@ -179,6 +176,13 @@ async function render() {
       if (response.status !== 200) throw new Error(`${path} answered ${response.status}`);
       pages[file] = await response.text();
     }
+    // Search engines get the sitemap as a file. It must list exactly the public pages.
+    const sitemap = await fetch(`${base}/sitemap.xml`);
+    if (sitemap.status !== 200) throw new Error(`/sitemap.xml answered ${sitemap.status}`);
+    pages["sitemap.xml"] = await sitemap.text();
+    const listed = [...pages["sitemap.xml"].matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]).sort().join(" ");
+    if (listed !== "https://pilanda.systems/ https://pilanda.systems/anfrage")
+      throw new Error(`sitemap lists ${listed || "nothing"}, adapt this script`);
     const missing = await fetch(`${base}/diese-seite-gibt-es-nicht`);
     if (missing.status !== 404) throw new Error(`unknown page answered ${missing.status}`);
     pages["404.html"] = await missing.text();
@@ -210,8 +214,9 @@ function publish(pages) {
       throw new Error(`secret marker in ${file}`);
   }
   for (const [file, html] of Object.entries(pages)) {
-    if (FORBIDDEN_PAGE_TEXT.test(html)) throw new Error(`${file} still mentions the chat, adapt this script`);
-    if (LEGAL_PAGES.includes(file) && /entwurf/i.test(html)) throw new Error(`${file} is marked as a draft, adapt this script`);
+    if (!LEGAL_PAGES.includes(file)) continue;
+    if (FORBIDDEN_LEGAL_TEXT.test(html)) throw new Error(`${file} still describes the chat, adapt this script`);
+    if (/entwurf/i.test(html)) throw new Error(`${file} is marked as a draft, adapt this script`);
   }
 }
 
