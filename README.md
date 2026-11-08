@@ -30,8 +30,9 @@ throwaway checkout, never to the web app itself:
 - Only `/`, `/anfrage`, `/danke`, `/impressum`, `/datenschutz` and `/agb` are
   published. Brand and print material stays out of the bundle.
 - `wartung.html` is published as the page to switch to during maintenance.
-- The Pi-FAQ ships without the answers that still hold a `[placeholder]`. They
-  appear by themselves once they are filled in in the web app.
+- The Pi-FAQ ships only when no answer holds a `[placeholder]`, otherwise the
+  run stops.
+- `sitemap.xml` is rendered once and published as a file.
 - The form has no option to mail a copy to the visitor. The service is public,
   so anyone could use that to send text from the company mailbox.
 - The contact form posts to `contact-mail/` on Azure, which mails
