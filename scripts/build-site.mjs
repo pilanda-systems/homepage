@@ -135,6 +135,12 @@ function adaptForStaticHosting() {
       "Formularangaben werden direkt per E-Mail an das Pilanda Team weitergeleitet",
       "Formularangaben werden über Microsoft Azure per E-Mail an das Pilanda Team weitergeleitet",
     ],
+    // contact-mail/ keys its request limit on the address, in memory only, and logs
+    // nothing but the reference.
+    [
+      "Unterlagen zu Aufträgen bewahren wir nach § 132 BAO sieben Jahre auf.",
+      "Unterlagen zu Aufträgen bewahren wir nach § 132 BAO sieben Jahre auf. Zum Schutz vor Massenanfragen verarbeitet der Mailversand beim Absenden Ihre IP-Adresse, um zu häufige Anfragen abzuweisen (Art. 6 Abs. 1 lit. f DSGVO). Sie wird dafür nur kurz im Arbeitsspeicher gehalten, nicht dauerhaft gespeichert und nicht protokolliert.",
+    ],
     [
       "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Sie werden nach spätestens 60 Tagen gelöscht.",
       "Beim Aufruf der Website verarbeitet unser Hosting-Anbieter Microsoft Azure (Microsoft Ireland Operations Limited, Rechenzentrum in Deutschland) technisch notwendige Zugriffsdaten (IP-Adresse, Datum, Uhrzeit, aufgerufene Seite) für den sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO). Wir führen keine eigenen Zugriffsprotokolle.",
