@@ -1,0 +1,104 @@
+Sicherheitsrichtlinie der Pilanda Systems FlexCo
+Stand: 10.11.2026
+
+English version below.
+
+
+DEUTSCH
+
+Sie haben eine Sicherheitslücke in einem unserer Systeme gefunden? Dann
+freuen wir uns über Ihre Meldung. Wir prüfen jede Meldung und beheben
+bestätigte Lücken so schnell wie möglich.
+
+Geltungsbereich
+
+- Die Website pilanda.systems und ihr Anfrageformular.
+- Weitere Systeme, die Pilanda Systems betreibt. Betrifft eine Lücke ein
+  System, das wir für einen Kunden betreiben, stimmen wir das weitere
+  Vorgehen mit diesem Kunden ab.
+
+So melden Sie eine Lücke
+
+Schreiben Sie an security@pilanda.systems. Hilfreich sind:
+
+- das betroffene System oder die betroffene Adresse,
+- eine Beschreibung der Lücke und ihrer möglichen Auswirkung,
+- die Schritte, mit denen wir sie nachvollziehen können,
+- Ihre Kontaktangaben für Rückfragen.
+
+Schicken Sie bitte keine personenbezogenen Daten Dritter mit, die Sie
+dabei gesehen haben.
+
+Was Sie von uns erwarten können
+
+- Wir bestätigen den Eingang Ihrer Meldung innerhalb von fünf Werktagen.
+- Wir halten Sie über den Stand der Prüfung und der Behebung informiert.
+- Nach der Behebung nennen wir Sie auf Wunsch in unserer Danksagung:
+  https://pilanda.systems/.well-known/security-acknowledgments.txt
+- Prämien zahlen wir nicht.
+
+Regeln für Ihre Prüfung
+
+- Greifen Sie nur so weit zu, wie es für den Nachweis nötig ist. Sehen Sie
+  keine Daten Dritter ein und ändern oder löschen Sie keine Daten.
+- Beeinträchtigen Sie nicht die Verfügbarkeit unserer Systeme, etwa durch
+  Last- oder Denial-of-Service-Tests.
+- Senden Sie über das Anfrageformular keine automatisierten oder
+  massenhaften Anfragen. Jede Anfrage landet als E-Mail bei unserem Team.
+- Verzichten Sie auf Social Engineering, Phishing und physische Zugriffe.
+- Veröffentlichen Sie Details erst, wenn die Lücke behoben ist oder wir
+  einen Zeitpunkt vereinbart haben. Wir streben eine Behebung innerhalb
+  von 90 Tagen an.
+
+Wer sich in gutem Glauben an diese Regeln hält, gegen den leiten wir
+wegen der Meldung keine rechtlichen Schritte ein.
+
+
+ENGLISH
+
+Found a security vulnerability in one of our systems? We welcome your
+report. We review every report and fix confirmed vulnerabilities as fast
+as we can.
+
+Scope
+
+- The website pilanda.systems and its inquiry form.
+- Other systems operated by Pilanda Systems. If a vulnerability affects a
+  system we run for a customer, we agree on the next steps with that
+  customer.
+
+How to report
+
+Write to security@pilanda.systems. Helpful details:
+
+- the affected system or address,
+- a description of the vulnerability and its possible impact,
+- the steps to reproduce it,
+- your contact details for questions.
+
+Please do not send us personal data of third parties that you came across.
+
+What you can expect from us
+
+- We confirm receipt of your report within five working days.
+- We keep you informed about our review and the fix.
+- After the fix, we name you in our acknowledgments if you wish:
+  https://pilanda.systems/.well-known/security-acknowledgments.txt
+- We do not pay bounties.
+
+Rules for testing
+
+- Access only as much as you need to prove the vulnerability. Do not view
+  third-party data, and do not change or delete any data.
+- Do not affect the availability of our systems, for example with load or
+  denial-of-service tests.
+- Do not send automated or bulk requests through the inquiry form. Every
+  request reaches our team as an email.
+- Do not use social engineering, phishing or physical access.
+- Publish details only once the vulnerability is fixed or we have agreed
+  on a date. We aim to fix within 90 days.
+
+If you follow these rules in good faith, we will not take legal action
+against you because of your report.
+
+The German version is binding.

@@ -1,0 +1,10 @@
+Danksagung / Acknowledgments
+Pilanda Systems FlexCo
+
+Wir danken allen, die uns Sicherheitslücken verantwortungsvoll gemeldet
+haben. Bisher gibt es noch keine Einträge.
+
+We thank everyone who has reported security vulnerabilities to us
+responsibly. There are no entries yet.
+
+Meldung / reporting: https://pilanda.systems/.well-known/security-policy.txt

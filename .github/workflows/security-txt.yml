@@ -1,0 +1,46 @@
+name: Security.txt
+
+# security.txt carries an expiry date (RFC 9116). An expired file tells
+# researchers to ignore it, so this run fails a month ahead. GitHub then
+# mails the repository admins.
+
+on:
+  schedule:
+    - cron: "23 6 * * 1"
+  push:
+    paths:
+      - hosting/well-known/**
+      - .github/workflows/security-txt.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check fields and expiry
+        working-directory: hosting/well-known
+        run: |
+          file=security.txt
+          for field in Contact Expires Canonical; do
+            grep -q "^$field: " "$file" || { echo "::error file=$file::$field is missing"; exit 1; }
+          done
+          [ "$(grep -c '^Expires: ' "$file")" = 1 ] || { echo "::error file=$file::Expires must appear once"; exit 1; }
+          expires="$(sed -n 's/^Expires: //p' "$file")"
+          left=$(( ($(date -d "$expires" +%s) - $(date +%s)) / 86400 ))
+          echo "Expires $expires, $left days left"
+          if [ "$left" -gt 365 ]; then echo "::error file=$file::Expires is more than a year ahead"; exit 1; fi
+          if [ "$left" -lt 30 ]; then echo "::error file=$file::Expires in $left days. Set a new date and deploy"; exit 1; fi
+          # Every linked file of this site must exist next to it.
+          for url in $(sed -nE 's#^(Policy|Acknowledgments|Canonical): https://pilanda\.systems/\.well-known/##p' "$file"); do
+            [ -f "$url" ] || { echo "::error file=$file::links to $url - which does not exist"; exit 1; }
+          done
+
+      - name: Compare with the live file
+        if: github.event_name == 'schedule'
+        run: curl -fsS https://pilanda.systems/.well-known/security.txt | diff - hosting/well-known/security.txt
