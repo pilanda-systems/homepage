@@ -17,6 +17,7 @@ Nothing happens when the web app has not changed.
 .github/workflows/deploy.yml    checks links, scans the image, rolls out to Azure
 .github/workflows/contact-mail.yml  builds and scans the mail service
 hosting/                        Nginx image that serves site/
+hosting/well-known/             security.txt with its policy and acknowledgments
 contact-mail/                   mails inquiries, runs on Azure Container Apps
 scripts/build-site.mjs          adapts the web app for static hosting, builds it
 site/                           the generated site
@@ -52,6 +53,12 @@ so visitors never wait for a cold start. Nginx keeps no access log and the
 environment has no log destination, which the privacy notice relies on.
 `deploy.yml` signs in with the federated identity `id-homepage-deploy`. It may
 push to the registry and update this one app, nothing else.
+
+**Security contact.** `/.well-known/security.txt` (RFC 9116) names
+security@pilanda.systems. Its `Expires` date must be renewed before it passes:
+`security-txt.yml` checks every Monday and fails 30 days ahead. Set a new date
+at most a year ahead, change the `Stand` of the policy if its text changes, and
+merge. A credit for a reporter goes into `security-acknowledgments.txt`.
 
 **Keeping it running.** The sync needs the secret `WEB_REPO_TOKEN`: a
 fine-grained token with read access to the contents of `pilanda-systems-web`,

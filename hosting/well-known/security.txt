@@ -1,0 +1,9 @@
+# Pilanda Systems FlexCo - Meldung von Sicherheitslücken / reporting security vulnerabilities
+# Format: RFC 9116
+
+Contact: mailto:security@pilanda.systems
+Expires: 2027-05-10T00:00:00.000Z
+Policy: https://pilanda.systems/.well-known/security-policy.txt
+Acknowledgments: https://pilanda.systems/.well-known/security-acknowledgments.txt
+Preferred-Languages: de, en
+Canonical: https://pilanda.systems/.well-known/security.txt
