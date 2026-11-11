@@ -93,6 +93,11 @@ function adaptForStaticHosting() {
   if (/"[^"\n]*\[[^"\n]*"/.test(read("src/lib/faq.ts")))
     throw new Error("src/lib/faq.ts: open placeholder in the FAQ, fill it in upstream");
 
+  // Typo upstream, by decision of Dominik Boeckle, 11.11.2026. Fixed only while
+  // it is there, so the run goes on once the web app has it right.
+  const concept = read("src/lib/pilanda-concept.ts");
+  writeFileSync(inWeb("src/lib/pilanda-concept.ts"), concept.replaceAll("DATENSOVERÄNITÄT", "DATENSOUVERÄNITÄT"));
+
   // No visitor data goes to Lovable or its Supabase database. Removing the
   // integration outright makes any remaining import fail the build, and without
   // .env no key can be baked into the bundle.
@@ -220,6 +225,7 @@ function publish(pages) {
       throw new Error(`secret marker in ${file}`);
   }
   for (const [file, html] of Object.entries(pages)) {
+    if (/DATENSOVER/i.test(html)) throw new Error(`${file} still has the typo in DATENSOUVERÄNITÄT, adapt this script`);
     if (!LEGAL_PAGES.includes(file)) continue;
     if (FORBIDDEN_LEGAL_TEXT.test(html)) throw new Error(`${file} still describes the chat, adapt this script`);
     if (/entwurf/i.test(html)) throw new Error(`${file} is marked as a draft, adapt this script`);
