@@ -1,1 +1,0 @@
-import{o as e}from"./index-ArnSTch1.js";import{t}from"./legal-page-lRJwNMlb.js";var n=e();function r(){return(0,n.jsx)(t,{document:`Datenschutz`})}export{r as component};
