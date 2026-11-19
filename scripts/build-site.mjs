@@ -46,6 +46,8 @@ const FORBIDDEN_TEXT = /lovable|gptengineer|gpt-eng|supabase|sb_secret_/i;
 // Elsewhere Pi-Chat is the name of a product and may appear.
 const FORBIDDEN_LEGAL_TEXT = /Pi[·-]Chat/;
 const LEGAL_PAGES = ["impressum.html", "datenschutz.html", "agb.html"];
+// Names of team members the homepage hides, filled while adapting.
+const HIDDEN_PEOPLE = [];
 
 const read = (file) => readFileSync(inWeb(file), "utf8").replace(/\r\n/g, "\n");
 
@@ -95,8 +97,25 @@ function adaptForStaticHosting() {
 
   // Typo upstream, by decision of Dominik Boeckle, 11.11.2026. Fixed only while
   // it is there, so the run goes on once the web app has it right.
-  const concept = read("src/lib/pilanda-concept.ts");
-  writeFileSync(inWeb("src/lib/pilanda-concept.ts"), concept.replaceAll("DATENSOVERÄNITÄT", "DATENSOUVERÄNITÄT"));
+  let concept = read("src/lib/pilanda-concept.ts").replaceAll("DATENSOVERÄNITÄT", "DATENSOUVERÄNITÄT");
+
+  // A person the homepage hides must not ship either: the filter alone leaves
+  // name, email and phone readable in the bundle. Follows the filter in the web
+  // app, so a person shown again ships again.
+  const teamSection = read("src/components/home/team-section.tsx");
+  for (const [, email] of teamSection.matchAll(/person\.email !== "([^"]+)"/g)) {
+    const at = concept.indexOf(`email: "${email}"`);
+    if (at < 0) throw new Error(`pilanda-concept.ts: hidden ${email} is gone, adapt this script`);
+    const start = concept.lastIndexOf("\n  {\n", at);
+    const end = concept.indexOf("\n  },\n", at);
+    const entry = concept.slice(start, end + 5);
+    const name = entry.match(/name: "([^"]+)"/)?.[1];
+    if (start < 0 || end < 0 || !name || entry.slice(5).includes("\n  {\n"))
+      throw new Error(`pilanda-concept.ts: entry of ${email} has an unexpected shape, adapt this script`);
+    concept = concept.slice(0, start) + concept.slice(end + 5);
+    HIDDEN_PEOPLE.push(name);
+  }
+  writeFileSync(inWeb("src/lib/pilanda-concept.ts"), concept);
 
   // No visitor data goes to Lovable or its Supabase database. Removing the
   // integration outright makes any remaining import fail the build, and without
@@ -223,6 +242,12 @@ function publish(pages) {
     if (FORBIDDEN_FILE.test(file.slice(out.length))) throw new Error(`forbidden file in output: ${file}`);
     if (/\.(html|js|css|txt)$/.test(file) && FORBIDDEN_TEXT.test(readFileSync(file, "utf8")))
       throw new Error(`secret marker in ${file}`);
+    // The email stays in the filter itself. Name and phone must be gone.
+    if (/\.(html|js)$/.test(file)) {
+      const text = readFileSync(file, "utf8");
+      for (const name of HIDDEN_PEOPLE)
+        if (text.includes(name)) throw new Error(`${file} still contains ${name}, who the homepage hides`);
+    }
   }
   for (const [file, html] of Object.entries(pages)) {
     if (/DATENSOVER/i.test(html)) throw new Error(`${file} still has the typo in DATENSOUVERÄNITÄT, adapt this script`);
