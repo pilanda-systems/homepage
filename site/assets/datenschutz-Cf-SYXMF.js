@@ -1,0 +1,1 @@
+import{o as e}from"./index-CSMn3ly3.js";import{t}from"./legal-page-CQ7iIdBM.js";var n=e();function r(){return(0,n.jsx)(t,{document:`Datenschutz`})}export{r as component};
