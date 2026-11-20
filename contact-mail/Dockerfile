@@ -1,11 +1,11 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0.403-alpine3.24 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0.404-alpine3.24 AS build
 WORKDIR /src
 COPY ContactMail.csproj .
 RUN dotnet restore
 COPY Program.cs .
 RUN dotnet publish --no-restore -c Release -o /app
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0.14-alpine3.24
+FROM mcr.microsoft.com/dotnet/aspnet:10.0.15-alpine3.24
 WORKDIR /app
 COPY --from=build /app .
 USER app
