@@ -5,7 +5,7 @@ RUN dotnet restore
 COPY Program.cs .
 RUN dotnet publish --no-restore -c Release -o /app
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0.15-alpine3.24
+FROM mcr.microsoft.com/dotnet/aspnet:11.0.0-alpine3.24
 WORKDIR /app
 COPY --from=build /app .
 USER app
