@@ -1,0 +1,1 @@
+import{o as e}from"./index-D-j5Ppuk.js";import{t}from"./legal-page-DIb-q-lS.js";var n=e();function r(){return(0,n.jsx)(t,{document:`Impressum`})}export{r as component};
