@@ -76,6 +76,12 @@ az acr build -r pilandahomepage -t contact-mail:<commit> contact-mail
 az containerapp update -n contact-mail -g rg-pilanda-homepage --image pilandahomepage.azurecr.io/contact-mail:<commit>
 ```
 
+The alert rule `contact-mail-failures` mails info@pilanda.systems through the
+action group `ag-contact-mail` when the service answers with a 5xx. It only sees
+requests that reach the service, and the metric can miss single requests. An
+outage without visitors stays silent. A regular outside check would close that,
+but it would also keep the container from scaling to zero.
+
 Run a sync by hand under Actions, or build locally:
 
 ```bash
